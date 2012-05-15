@@ -112,11 +112,12 @@ public class MySQL {
 			}
 			if(conn != null){
 				try{
-					ps = conn.prepareStatement("INSERT INTO towns (name, owner, assistant, bonus) VALUES(?,?,?,?)"); //For multiple values use Table (Value1, Value2, Value3) VALUES(?,?,?)  then ps.setString(1, val); ps.setString(2, val); ps.setString(3, val);
+					ps = conn.prepareStatement("INSERT INTO towns (name, owner, assistant, bonus, balance) VALUES(?,?,?,?,?)"); //For multiple values use Table (Value1, Value2, Value3) VALUES(?,?,?)  then ps.setString(1, val); ps.setString(2, val); ps.setString(3, val);
 					ps.setString(1, name);
                                         ps.setString(2, owner);
                                         ps.setString(3, assistant);
                                         ps.setInt(4, 0);
+                                        ps.setDouble(4, 0);
 					ps.executeUpdate(); //Execute InsertChunk
 				} catch (SQLException SQLE) { //May be thrown for cases where Key Already Exists
 					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Insert ", SQLE);
@@ -212,6 +213,33 @@ public class MySQL {
 			}
 		}    
     
+    public void updateDoubleEntry(String key, String field, String table, double updateKey, String updateField){
+			Connection conn = null;
+			PreparedStatement ps = null;
+			try{
+				conn = connector.getConnection();
+			}catch(Exception SQLE){
+				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+			}
+			if(conn != null){
+				try{
+					ps = conn.prepareStatement("UPDATE "+table+" SET "+updateField+" = ? WHERE "+field+" = ? LIMIT 1");
+					ps.setDouble(1, updateKey);
+                                        ps.setString(2, key);
+					ps.executeUpdate();
+				}catch (SQLException SQLE) {
+					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Update ", SQLE);
+				}finally{
+					try{
+						if(ps != null){ ps.close(); }
+						if(conn != null){ conn.close(); }
+					}catch(SQLException SQLE){
+						log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					}
+				}
+			}
+		} 
+    
     
     public String getStringValue(String key, String table, String fieldtoget, String field){ //Can be anything like int double long String float etc....
 			String ValueGet = "";
@@ -266,6 +294,42 @@ public class MySQL {
     			rs = ps.executeQuery(); //Execute Query
     			if (rs.next()){
     				ValueGet = rs.getInt(fieldtoget); //Gets the String Value
+    			}
+			}catch (SQLException SQLE){
+				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in getValue ", SQLE);
+			}finally{
+				try{ //Connection Closing
+					if(rs != null){ rs.close(); }
+					if(ps != null){ ps.close(); }
+					if(conn != null){ conn.close(); }
+				}catch(SQLException SQLE){
+					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+				}
+    }
+                        return ValueGet;
+    }   
+                        return null;
+
+
+    }
+        
+    public Double getDoubleValue(String key, String table, String fieldtoget, String field){ //Can be anything like int double long String float etc....
+			double ValueGet = -1;
+			Connection conn = null;
+			PreparedStatement ps = null;
+                        ResultSet rs = null;
+    		try{
+				conn = connector.getConnection();
+			}catch(Exception SQLE){
+				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+			}
+                        if(conn != null){ //Dont wanna try executing if the connection isnt set
+			try{
+				ps = conn.prepareStatement("SELECT "+fieldtoget+" FROM "+table+" WHERE "+field+" = ?");
+				ps.setString(1, key);
+    			rs = ps.executeQuery(); //Execute Query
+    			if (rs.next()){
+    				ValueGet = rs.getDouble(fieldtoget); //Gets the String Value
     			}
 			}catch (SQLException SQLE){
 				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in getValue ", SQLE);
@@ -351,7 +415,7 @@ public class MySQL {
 
     
     public void createTownTable(){
-		String table = ("CREATE TABLE IF NOT EXISTS `towns` (`ID` INT(255) NOT NULL AUTO_INCREMENT, `name` varchar(50) NOT NULL, `owner` varchar(50) NOT NULL, `assistant` varchar(50) NOT NULL, `bonus` INT(5) NOT NULL, PRIMARY KEY (`ID`))");
+		String table = ("CREATE TABLE IF NOT EXISTS `towns` (`ID` INT(255) NOT NULL AUTO_INCREMENT, `name` varchar(50) NOT NULL, `owner` varchar(50) NOT NULL, `assistant` varchar(50) NOT NULL, `bonus` INT(5) NOT NULL, `balance` DECIMAL(50) PRIMARY KEY (`ID`))");
 		Connection conn = null;
 		Statement st = null;
 		try{
