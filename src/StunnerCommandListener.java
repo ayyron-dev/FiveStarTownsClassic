@@ -144,6 +144,16 @@ public class StunnerCommandListener extends PluginListener{
                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are already in a town! Please leave it before starting a new one.");
                     return true;
                 }
+                String moneyname = (String)etc.getLoader().callCustomHook("dCBalance", new Object[] {"Money-Name"});
+                if(plugin.getConfig().getUseDCO()){
+                    Double pbalance = (Double)etc.getLoader().callCustomHook("dCBalance", new Object[] {"Account-Balance", player.getOfflineName()});
+                    if(pbalance < plugin.getConfig().getTownCost()){
+                        player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fNot enough §b" + moneyname + " §fto start a town.");
+                        player.sendMessage("    §b- §fYou need:  §b" + plugin.getConfig().getTownCost() + " " +  moneyname);
+                        return true;
+                    }
+                }
+                
                 StringBuilder sb = new StringBuilder();
                 for(int i = 2 ; i < cmd.length ; i++){
                     sb.append(cmd[i] + " ");
@@ -157,6 +167,11 @@ public class StunnerCommandListener extends PluginListener{
                 mysql.insertTownPlayer(player.getOfflineName(), townName);
                 mysql.insertTown(townName, player.getOfflineName(), "");
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fTown §a'§b"+townName+"§a'§f has been created!");
+                if(plugin.getConfig().getUseDCO()){
+                    etc.getLoader().callCustomHook("dCBalance", new Object[] {"Account-Withdraw", player.getOfflineName(), plugin.getConfig().getTownCost()});
+                    player.sendMessage("    §b- §fYou have been charged:  §b" + plugin.getConfig().getTownCost() + " " +  moneyname);
+                }
+               
                 return true;
             }
             

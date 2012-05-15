@@ -15,6 +15,7 @@ public class StunnerConfig {
     private double townCost;
     private String townColor;
     private String chatSyntax;
+    private boolean useDCO;
     
     private Logger log=Logger.getLogger("Minecraft");
     PropertiesFile settings;
@@ -39,6 +40,7 @@ public class StunnerConfig {
         chunkmultiplier = settings.getInt("plot-multiplier-per-member", 3);
         useFactions = settings.getBoolean("use-factions", false);
         townCost = settings.getDouble("town-cost", 1000);
+        useDCO = settings.getBoolean("use-dConomy", true);
         useChat = chat.getBoolean("use-chat", true);
         chatSyntax = chat.getString("chat-syntax", "");
         townColor = chat.getString("town-chat-color","2");
@@ -84,5 +86,13 @@ public class StunnerConfig {
     
     public String getTownColor(){
         return townColor;
+    }
+    
+    public double getTownCost(){
+        return townCost;
+    }
+    
+    public boolean getUseDCO(){
+        return useDCO;
     }
 }
