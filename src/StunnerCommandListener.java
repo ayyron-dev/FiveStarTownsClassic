@@ -56,7 +56,7 @@ public class StunnerCommandListener extends PluginListener{
                     String townName = town.getName(); 
                     MySQL mysql = new MySQL();
                     int chunksowned = plugin.getManager().chunkAmount(townName);
-                    int chunksallowed = plugin.getConfig().getChunkMultiplier() * town.getMemberCount(); 
+                    int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus(); 
                         if(chunksowned >= chunksallowed){
                             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYour town already owns the max amount of land plots.");
                             player.sendMessage("  §a-§bHint§a- §fTry unclaiming land if you really need this land plot.");
@@ -144,8 +144,9 @@ public class StunnerCommandListener extends PluginListener{
                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are already in a town! Please leave it before starting a new one.");
                     return true;
                 }
-                String moneyname = (String)etc.getLoader().callCustomHook("dCBalance", new Object[] {"Money-Name"});
+                String moneyname = "";
                 if(plugin.getConfig().getUseDCO()){
+                    moneyname = (String)etc.getLoader().callCustomHook("dCBalance", new Object[] {"Money-Name"});
                     Double pbalance = (Double)etc.getLoader().callCustomHook("dCBalance", new Object[] {"Account-Balance", player.getOfflineName()});
                     if(pbalance < plugin.getConfig().getTownCost()){
                         player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fNot enough §b" + moneyname + " §fto start a town.");
@@ -234,12 +235,55 @@ public class StunnerCommandListener extends PluginListener{
                 MySQL mysql = new MySQL();
                 mysql.delete("townsusers", "username", tp.getName());
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fYou have left your town");
+                Town town = tp.getTown();
+                if(town.getMembers().size() < 1){
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fNo members left in town, town has been deleted.");
+                    mysql.delete("towns", "name", tp.getTownName());
+                }
             }
             
     //                                  //
-    //            Create Town           //
+    //            Set Assistant         //
     //                                  //
+            if((cmd[1].equalsIgnoreCase("setassistant") || cmd[1].equalsIgnoreCase("seta ")) && tp != null && tp.isOwner() && cmd.length == 3){
+                MySQL mysql = new MySQL();
+                Player aplayer = etc.getServer().getPlayer(cmd[2]);
+                if(aplayer == null){
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fThat player doesn't appear to exist.");
+                    return true;
+                }
+                mysql.updateStringEntry(tp.getTownName(), "name", "towns", cmd[2], "assistant");
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fYou have set assitant to: " + cmd[2]);
+                return true;
+            }
             
+//                                      //
+//            Info Command              //
+//                                      //
+            if(cmd[1].equalsIgnoreCase("info") && tp != null && cmd.length == 2){
+                Town town = tp.getTown();
+                int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus(); 
+                 player.sendMessage("§a[§b" + tp.getTownName() + "§a]");
+                 player.sendMessage("§aOwner§b:§f " + town.getOwner());
+                 player.sendMessage("§aAssistant§b:§f " + town.getAssistant());
+                 player.sendMessage("§aClaimed Land§b:§f " + String.valueOf(plugin.getManager().chunkAmount(tp.getTownName())) + "/" + String.valueOf(chunksallowed));
+                 player.sendMessage("§aMembers§b:§f " + town.getMembers().toString());
+                 return true;
+            }
+            
+    //                                  //
+    //            Leave Town            //
+    //                                  //
+//            if(cmd[1].equalsIgnoreCase("setbonus")){
+//                
+//            }
+            
+    //                                  //
+    //            Leave Town            //
+    //                                  //
+//            if(cmd[1].equalsIgnoreCase("setbonus")){
+//            
+//            }
             
             
             

@@ -11,8 +11,8 @@ import java.sql.SQLException;
 import java.sql.DriverManager;
 
 public class MySQLConnector {
-    File file = new File("plugins/StunnerTowns/StandaloneMySQLProps.txt");
-    File dir = new File("plugins/StunnerTowns");
+    File file = new File("plugins/config/StunnerTowns/StandaloneMySQLProps.txt");
+    File dir = new File("plugins/config/StunnerTowns");
     StunnerTowns plugin;
     
     static String UserName, Password, databaseName, HostName, UsersTable;
@@ -75,7 +75,7 @@ public class MySQLConnector {
     }
     
     public Connection getConnection() throws SQLException{
-        if(plugin.getInstance().getConfig().getMySQL()){
+        if(plugin.getConfig().getMySQL()){
             return etc.getConnection().getConnection();
         }
         

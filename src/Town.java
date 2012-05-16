@@ -51,6 +51,9 @@ public class Town {
         mysql.updateStringEntry(name, "name", "towns", tpname, "assistant");
     }
     
+    public int getBonus(){
+        return bonusChunks;
+    }
     public void setBonus(int num){
         mysql.updateIntEntry(name, "name", "towns", num, "bonus");
     }
