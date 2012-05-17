@@ -1,12 +1,12 @@
 
 public class TownPlayer {
-    String name;
-    String townName;
-    Town town;
-    boolean isOwner = false;
-    boolean isAssistant = false;
+    private String name;
+    private String townName;
+    private Town town;
+    private boolean isOwner = false;
+    private boolean isAssistant = false;
     MySQL mysql = new MySQL();
-    StunnerTowns plugin;
+    private StunnerTowns plugin;
     
     public TownPlayer(Player player){
         plugin = StunnerTowns.getInstance();

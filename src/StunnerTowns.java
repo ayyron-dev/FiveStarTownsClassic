@@ -15,6 +15,10 @@ public class StunnerTowns extends Plugin{
     private StunnerMoveListener sml;
     private StunnerChat stunnerchat;
     private MySQLConnector connector = new MySQLConnector();
+    private TownRankManager townrank;
+    private MayorCommandListener mayorcommandlistener;
+    private AssistantCommandListener assistantcommandlistener;
+    private MemberCommandListener membercommandlistener;
     
     @Override
      public void disable() {    
@@ -27,10 +31,15 @@ public class StunnerTowns extends Plugin{
         stunnerconfig = new StunnerConfig(this);
         townmanager = new TownManager(this);
         scl = new StunnerCommandListener();
+        mayorcommandlistener = new MayorCommandListener();
+        assistantcommandlistener = new AssistantCommandListener();
+        membercommandlistener = new MemberCommandListener();
         sml = new StunnerMoveListener();
         stunnerchat = new StunnerChat();
+        townrank = new TownRankManager();
         log.info(name + " version " + version + " enabled.");
         connector.initialize();
+        townrank.loadTownRanks();
         MySQL mysql = new MySQL();
         mysql.createChunkTable();
         mysql.createTownTable();
@@ -44,6 +53,9 @@ public class StunnerTowns extends Plugin{
     public void initialize() {
         log.info(name + " version " + version + " by " + creator + " has been initialized.");
         etc.getLoader().addListener(PluginLoader.Hook.COMMAND, scl, this, PluginListener.Priority.MEDIUM);
+        etc.getLoader().addListener(PluginLoader.Hook.COMMAND, mayorcommandlistener, this, PluginListener.Priority.MEDIUM);
+        etc.getLoader().addListener(PluginLoader.Hook.COMMAND, assistantcommandlistener, this, PluginListener.Priority.MEDIUM);
+        etc.getLoader().addListener(PluginLoader.Hook.COMMAND, membercommandlistener, this, PluginListener.Priority.MEDIUM);
         etc.getLoader().addListener(PluginLoader.Hook.PLAYER_MOVE, sml, this, PluginListener.Priority.MEDIUM);
         etc.getLoader().addListener(PluginLoader.Hook.CHAT, stunnerchat, this, PluginListener.Priority.MEDIUM);
         etc.getLoader().addListener(PluginLoader.Hook.COMMAND, stunnerchat, this, PluginListener.Priority.MEDIUM);
@@ -60,6 +72,14 @@ public class StunnerTowns extends Plugin{
     
     public TownManager getManager(){
         return townmanager;
+    }
+    
+    public TownRankManager getTownRankManager(){
+        return townrank;
+    }
+    
+    public StunnerCommandListener getCommandListener(){
+        return scl;
     }
     
 }

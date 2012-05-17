@@ -44,96 +44,8 @@ public class StunnerCommandListener extends PluginListener{
                     return true;
                 }
 
-    //                                  //
-    //            Claiming Land         //
-    //                                  //
-
-                if(cmd[1].equalsIgnoreCase("claim") && tp != null && (tp.isOwner() || tp.isAssistant())){
-                    int chunkx = (int)player.getX() >> 4;
-                    int chunkz = (int)player.getZ() >> 4;
-                    Town town = tp.getTown();
-                    String chunky = chunkx+":"+chunkz;
-                    String townName = town.getName(); 
-                    MySQL mysql = new MySQL();
-                    int chunksowned = plugin.getManager().chunkAmount(townName);
-                    int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus(); 
-                        if(chunksowned >= chunksallowed){
-                            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYour town already owns the max amount of land plots.");
-                            player.sendMessage("  §a-§bHint§a- §fTry unclaiming land if you really need this land plot.");
-                            return true;
-                        }
-                        if(!plugin.getManager().chunksConnected((int)player.getX(), (int)player.getZ(), townName) && chunksowned > 0){
-                            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand Section not connected to your town.");
-                            player.sendMessage("  §a-§bHint§a- §fTry claiming land next to your existing town.");
-                            return true;
-                        }
-                        if(plugin.getManager().containsKey(chunky)){
-                            if(plugin.getManager().get(chunky).equalsIgnoreCase("Wilderness")){
-                                plugin.getManager().remove(chunky);
-                                plugin.getManager().put(chunky, townName);
-                                mysql.updateStringEntry("chunk", chunky,"chunks", townName, "town");
-                                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand Claimed!");
-                                return true;
-                            }
-                            else{
-                                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand is owned by: §b" + plugin.getManager().get(chunky));
-                                return true;
-                            }
-                        }
-                        if(!plugin.getManager().containsKey(chunky)){
-                            plugin.getManager().put(chunky, townName);
-                            mysql.InsertChunk(chunky, townName);
-                            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand Claimed!");
-                            return true;
-                        }
-                }
-
-    //                                      //
-    //            Unclaiming Land           //
-    //                                      //
-
-                if(cmd[1].equalsIgnoreCase("unclaim") && tp != null && (tp.isOwner() || tp.isAssistant())){
-
-                    int chunkx = (int)player.getX() >> 4;
-                    int chunkz = (int)player.getZ() >> 4;
-                    String chunky = chunkx+":"+chunkz;
-                    String townName = tp.getTownName();
-                    if(plugin.getManager().containsKey(chunky)){
-                        MySQL mysql = new MySQL();
-                        if(plugin.getManager().get(chunky).equalsIgnoreCase(townName)){
-                            plugin.getManager().remove(chunky);
-                            plugin.getManager().put(chunky, "Wilderness");
-                            mysql.updateStringEntry("chunk", chunky,"chunks", "Wilderness", "town");
-                            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand unclaimed");
-                            return true;
-                        }
-                        else{
-                            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYour town does not own this land.");
-                            return true;
-                        }
-                    }
-                    else{
-                        player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYour town does not own this land.");
-                        return true;
-                    }
-                }
                 
-//                                          //
-//                Disband Command           //
-//                                          //
-                
-            if(cmd[1].equalsIgnoreCase("disband") && tp != null && tp.isOwner()){
-                    Town town = tp.getTown();
-                    MySQL mysql = new MySQL();
-                    mysql.removeChunk(town.getName());
-                    mysql.delete("towns", "name", tp.getTownName());
-                    List<Player> players = etc.getServer().getPlayerList();
-                    for(int i = 0; i<players.size(); i++){
-                        mysql.delete("townsusers", "username", players.get(i).getOfflineName());
-                    }
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fTown §a'§b"+town.getName()+"§a'§f has been disbanded.");
-                    return true;
-                }
+
             
     //                                  //
     //            Create Town           //
@@ -176,39 +88,7 @@ public class StunnerCommandListener extends PluginListener{
                 return true;
             }
             
-    //                                  //
-    //            Invite Town           //
-    //                                  //
-            if(cmd[1].equalsIgnoreCase("invite") && tp != null && (tp.isOwner() || tp.isAssistant())){
-                if(cmd.length <= 2){
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fToo few Arguments to invite a new player.");
-                    player.sendMessage("    §a- §f/town invite [playername]");
-                    return true;
-                }
-                Player iplayer = etc.getServer().getPlayer(cmd[2]);
-                if(iplayer == null){
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThat player is not online or doesn't exists.");
-                    return true;
-                }
-                TownPlayer itp = plugin.getManager().getTownPlayer(iplayer.getOfflineName());
-                if(itp != null){
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThat player is already in a town.");
-                    return true;
-                }
-                
-                if(acceptMap.containsKey(iplayer) && acceptMap.get(iplayer).equals(player)){
-                    iplayer.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+player.getOfflineName()+"§f has invited you to §b"+tp.getTownName()+"§f.");
-                    iplayer.sendMessage("    §a- To Accept Do:  §f/town accept [townname]");
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+iplayer.getOfflineName()+"§f has been invited your town.");
-                    return true;
-                }
-                acceptMap.put(iplayer, player);
-                iplayer.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+player.getOfflineName()+"§f has invited you to §b"+tp.getTownName()+"§f.");
-                iplayer.sendMessage("    §a- To Accept Do:  §f/town accept [townname]");
-                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+iplayer.getOfflineName()+"§f has been invited your town.");
-                return true;
-                
-            }
+
             
     //                                  //
     //            Accept Town           //
@@ -228,48 +108,11 @@ public class StunnerCommandListener extends PluginListener{
                 }
             }
             
-    //                                  //
-    //            Leave Town            //
-    //                                  //
-            if(cmd[1].equalsIgnoreCase("leave") && tp != null ){
-                MySQL mysql = new MySQL();
-                mysql.delete("townsusers", "username", tp.getName());
-                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fYou have left your town");
-                Town town = tp.getTown();
-                if(town.getMembers().size() < 1){
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fNo members left in town, town has been deleted.");
-                    mysql.delete("towns", "name", tp.getTownName());
-                }
-            }
+
             
-    //                                  //
-    //            Set Assistant         //
-    //                                  //
-            if((cmd[1].equalsIgnoreCase("setassistant") || cmd[1].equalsIgnoreCase("seta ")) && tp != null && tp.isOwner() && cmd.length == 3){
-                MySQL mysql = new MySQL();
-                Player aplayer = etc.getServer().getPlayer(cmd[2]);
-                if(aplayer == null){
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fThat player doesn't appear to exist.");
-                    return true;
-                }
-                mysql.updateStringEntry(tp.getTownName(), "name", "towns", cmd[2], "assistant");
-                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fYou have set assitant to: " + cmd[2]);
-                return true;
-            }
+
             
-//                                      //
-//            Info Command              //
-//                                      //
-            if(cmd[1].equalsIgnoreCase("info") && tp != null && cmd.length == 2){
-                Town town = tp.getTown();
-                int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus(); 
-                 player.sendMessage("§a[§b" + tp.getTownName() + "§a]");
-                 player.sendMessage("§aOwner§b:§f " + town.getOwner());
-                 player.sendMessage("§aAssistant§b:§f " + town.getAssistant());
-                 player.sendMessage("§aClaimed Land§b:§f " + String.valueOf(plugin.getManager().chunkAmount(tp.getTownName())) + "/" + String.valueOf(chunksallowed));
-                 player.sendMessage("§aMembers§b:§f " + town.getMembers().toString());
-                 return true;
-            }
+
             
     //                                  //
     //            Leave Town            //
