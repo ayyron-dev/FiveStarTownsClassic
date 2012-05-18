@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 
 public class StunnerCommandListener extends PluginListener{
     private Logger log=Logger.getLogger("Minecraft");
-    private StunnerTowns plugin;
+    private FiveStarTowns plugin;
     HashMap<Player, Player> acceptMap = new HashMap<Player, Player>();
     
     public StunnerCommandListener(){
-        this.plugin = StunnerTowns.getInstance();
+        this.plugin = FiveStarTowns.getInstance();
     }
     
     
@@ -18,7 +18,7 @@ public class StunnerCommandListener extends PluginListener{
         public boolean onCommand(Player player, String[] cmd){
             TownPlayer tp = plugin.getManager().getTownPlayer(player.getOfflineName());
         
-            if(player.canUseCommand("/stunnertowns") && (cmd[0].equalsIgnoreCase("/town") || cmd[0].equalsIgnoreCase("/t"))){
+            if(player.canUseCommand("/fivestartowns") && (cmd[0].equalsIgnoreCase("/town") || cmd[0].equalsIgnoreCase("/t"))){
 
     //                                  //
     //            Here Command          //
@@ -115,31 +115,63 @@ public class StunnerCommandListener extends PluginListener{
                 }
             }
             
-
-            
-
-            
-
             
     //                                  //
-    //            Leave Town            //
-    //                                  //
-//            if(cmd[1].equalsIgnoreCase("setbonus")){
-//                
-//            }
+    //           Info command           //
+    //                                  //            
+            if(cmd[1].equalsIgnoreCase("info") && cmd.length > 2 ){
+                StringBuilder sb = new StringBuilder();
+                for(int i = 2; i < cmd.length ; i++){
+                    sb.append(cmd[i]).append(" ");
+                }
+                Town town = plugin.getManager().getTown(sb.toString().trim());
+                int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus(); 
+                player.sendMessage("§a[§b" + town.getRankName()+ " " + tp.getTownName() + "§a]");
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThis Land is: §b" + town.getRankName()+ " " + town.getName() + " Territory§f.");
+                player.sendMessage("§a"+town.getMayorName()+"§b:§f " + town.getOwner());
+                player.sendMessage("§a"+town.getAssistantName()+"§b:§f " + town.getAssistant());
+                player.sendMessage("§aFlags§b:§f " + town.getFlagString());
+                player.sendMessage("§aClaimed Land§b:§f " + String.valueOf(plugin.getManager().chunkAmount(town.getName())) + "/" + String.valueOf(chunksallowed));
+                player.sendMessage("§aMembers§b:§f " + town.getMembers().toString());
+                return true;
+            }
             
+            
+            
+            
+            
+     
     //                                  //
-    //            Leave Town            //
+    //           Help Menu              //
     //                                  //
-//            if(cmd[1].equalsIgnoreCase("setbonus")){
-//            
-//            }
+            if(cmd[1].equalsIgnoreCase("help")){
+                if(cmd.length == 3){
+                    if(cmd[2].equalsIgnoreCase("member") || cmd[2].equalsIgnoreCase("m")){
+                        memberHelp(player);
+                        return true;
+                    }
+                    if(cmd[2].equalsIgnoreCase("assistant") || cmd[2].equalsIgnoreCase("a")){
+                        assistantHelp(player);
+                        return true;
+                    }
+                    if(cmd[2].equalsIgnoreCase("owner") || cmd[2].equalsIgnoreCase("o")){
+                        ownerHelp(player);
+                        return true;
+                    }
+                }
+                help(player);
+                return true;            
+            }
             
             
             
                 if(player.isAdmin()){
                     if(cmd[1].equalsIgnoreCase("addbonus") && cmd.length == 4){
-                        Town town = plugin.getManager().getTown(cmd[2]);
+                        StringBuilder sb = new StringBuilder();
+                        for(int i = 2; i < cmd.length ; i++){
+                            sb.append(cmd[i]).append(" ");
+                        }
+                        Town town = plugin.getManager().getTown(sb.toString().trim());
                         if(town != null){
                             town.addBonus(Integer.valueOf(cmd[3]));
                             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f Added bonus land plots to: §b" + town.getName());
@@ -150,7 +182,11 @@ public class StunnerCommandListener extends PluginListener{
                     }
                     
                     if(cmd[1].equalsIgnoreCase("setbonus") && cmd.length == 4){
-                        Town town = plugin.getManager().getTown(cmd[2]);
+                        StringBuilder sb = new StringBuilder();
+                        for(int i = 2; i < cmd.length ; i++){
+                            sb.append(cmd[i]).append(" ");
+                        }
+                        Town town = plugin.getManager().getTown(sb.toString().trim());
                         if(town != null){
                             town.setBonus(Integer.valueOf(cmd[3]));
                             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f Set bonus land plots of: §b" + town.getName());
@@ -168,15 +204,63 @@ public class StunnerCommandListener extends PluginListener{
         
         
         public void help(Player player){
-            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fStunnerTowns help");
-            player.sendMessage("  §a- /t claim    §fClaim land for your town");
-            player.sendMessage("  §a- /t unclaim  §fUnclaim land for your town");
+            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns help");
+            player.sendMessage("  §a- /t info [town]    §fget this towns info");
             player.sendMessage("  §a- /t here  §fSee who owns the town where you are standing");
-            player.sendMessage("  §a- /t unclaim  §fUnclaim land for your town");
-            player.sendMessage("  §a- /t invite [playername]  §finvite a player to your town");
             player.sendMessage("  §a- /t accept [townname]  §faccept an invitation to a town");
             player.sendMessage("  §a- /t create  [townname]§fcreate a town");
-            player.sendMessage("  §a- /t disband  §fdisband your town");
+            player.sendMessage("  §a- /t help §fview this menu");
+            player.sendMessage("  §a- /t help [member|m]  §ftown member help");
+            player.sendMessage("  §a- /t help [assistant|a]  §ftown assistant help");
+            player.sendMessage("  §a- /t help [owner|o]  §ftown owner help");
+        }
+        
+        public void memberHelp(Player player){
+            TownPlayer tp = plugin.getManager().getTownPlayer(player.getName());
+            if(tp != null && (tp.isAssistant() || tp.isOwner())){
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns Member Help");
+                player.sendMessage("  §a- /t leave    §fleave your town");
+                player.sendMessage("  §a- /t info §ftoggle flags on or off");
+                if(plugin.getConfig().getUseDCO()){
+                    player.sendMessage("  §a- /t donate [amount]  §fdonate money to your town");
+                    player.sendMessage("  §a- /t bank §fview your towns bank account");
+                }
+                return;
+            }
+            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are not a Town Member.");
+        }
+        
+        public void assistantHelp(Player player){
+            TownPlayer tp = plugin.getManager().getTownPlayer(player.getName());
+            if(tp != null && (tp.isAssistant() || tp.isOwner())){
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns Assistant Help");
+                player.sendMessage("  §a- /t claim    §fclaim land for your town");
+                player.sendMessage("  §a- /t unclaim §funclaim land for your town");
+                if(plugin.getConfig().getUseDCO()){
+                    player.sendMessage("  §a- /t buyland [message]  §fbuy more land for yout town");
+                }
+                player.sendMessage("  §a- /t invite [playername]  §finvite a player to your town");
+                player.sendMessage("  §a- /t kick [playername]  §fkick a player out of your town");
+                return;
+            }
+            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are not a Town Assistant.");
+        }
+        
+        
+        public void ownerHelp(Player player){
+            TownPlayer tp = plugin.getManager().getTownPlayer(player.getName());
+            if(tp != null && tp.isOwner()){
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns Owner Help");
+                player.sendMessage("  §a- /t toggle    §fview flags you can toggle for your town");
+                player.sendMessage("  §a- /t toggle [flag] [on|off] §ftoggle flags on or off");
+                player.sendMessage("  §a- /t setwelcome [message]  §fset your towns welcome message");
+                player.sendMessage("  §a- /t setfarewell [message]  §fset your towns farewell message");
+                player.sendMessage("  §a- /t setassistant [playername]  §fset your towns assistant");
+                player.sendMessage("  §a- /t seta [playername]  §fset your towns assistant");
+                player.sendMessage("  §a- /t disband  §fdisband your town");
+                return;
+            }
+            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are not a Town Owner.");
         }
     
 }

@@ -22,7 +22,7 @@ public class MySQL {
         try{
                 conn = connector.getConnection();
         }catch(Exception SQLE){
-                log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+                log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
         }
         if(conn != null){ //Dont wanna try executing if the connection isnt set
                 try{
@@ -32,14 +32,14 @@ public class MySQL {
                         rs = ps.executeQuery(); //Executes a ResultSet
                         if (rs.next()){exists = true; } //ResultSet was returned so key exists
                 } catch (SQLException ex) {
-                        log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in keyExsists ", ex);
+                        log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in keyExsists ", ex);
                 }finally{
                         try{//Close Connections
                                 if(rs != null && !rs.isClosed()){ rs.close(); }
                                 if(ps != null && !ps.isClosed()){ ps.close(); }
                                 if(conn != null && !conn.isClosed()){ conn.close(); }
                         }catch(SQLException SQLE){
-                                log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+                                log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
                         }
                 }
                 if(exists){return true;}
@@ -55,7 +55,7 @@ public class MySQL {
 			try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
 			if(conn != null){
 				try{
@@ -63,13 +63,13 @@ public class MySQL {
 					ps.setString(1, key);
 					ps.executeUpdate(); //Execute InsertChunk
 				} catch (SQLException SQLE) { //May be thrown for cases where Key Already Exists
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Insert ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in Insert ", SQLE);
 				}finally{
 					try{
 						if(ps != null && !ps.isClosed()){ ps.close(); }
 						if(conn != null && !conn.isClosed()){ conn.close(); }
 					}catch(SQLException SQLE){
-						log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+						log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 					}
 				}
 			}
@@ -81,22 +81,23 @@ public class MySQL {
 			try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
 			if(conn != null){
 				try{
-					ps = conn.prepareStatement("INSERT INTO chunks (coords, town) VALUES(?,?)"); //For multiple values use Table (Value1, Value2, Value3) VALUES(?,?,?)  then ps.setString(1, val); ps.setString(2, val); ps.setString(3, val);
+					ps = conn.prepareStatement("INSERT INTO chunks (coords, town, owner) VALUES(?,?,?)"); //For multiple values use Table (Value1, Value2, Value3) VALUES(?,?,?)  then ps.setString(1, val); ps.setString(2, val); ps.setString(3, val);
 					ps.setString(1, coords);
                                         ps.setString(2, strang);
+                                        ps.setString(3, "none");
 					ps.executeUpdate(); //Execute InsertChunk
 				} catch (SQLException SQLE) { //May be thrown for cases where Key Already Exists
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Insert ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in Insert ", SQLE);
 				}finally{
 					try{
 						if(ps != null && !ps.isClosed()){ ps.close(); }
 						if(conn != null && !conn.isClosed()){ conn.close(); }
 					}catch(SQLException SQLE){
-						log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+						log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 					}
 				}
 			}
@@ -110,7 +111,7 @@ public class MySQL {
 			try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
 			if(conn != null){
 				try{
@@ -119,13 +120,13 @@ public class MySQL {
                                         ps.setString(2, town);
 					ps.executeUpdate(); //Execute InsertChunk
 				} catch (SQLException SQLE) { //May be thrown for cases where Key Already Exists
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Insert ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in Insert ", SQLE);
 				}finally{
 					try{
 						if(ps != null && !ps.isClosed()){ ps.close(); }
 						if(conn != null && !conn.isClosed()){ conn.close(); }
 					}catch(SQLException SQLE){
-						log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+						log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 					}
 				}
 			}
@@ -137,7 +138,7 @@ public class MySQL {
 			try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
 			if(conn != null){
 				try{
@@ -146,13 +147,13 @@ public class MySQL {
                                         ps.setString(2, key);
 					ps.executeUpdate();
 				}catch (SQLException SQLE) {
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Update ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in Update ", SQLE);
 				}finally{
 					try{
 						if(ps != null){ ps.close(); }
 						if(conn != null){ conn.close(); }
 					}catch(SQLException SQLE){
-						log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+						log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 					}
 				}
 			}
@@ -164,7 +165,7 @@ public class MySQL {
 			try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
 			if(conn != null){
 				try{
@@ -173,13 +174,13 @@ public class MySQL {
                                         ps.setString(2, key);
 					ps.executeUpdate();
 				}catch (SQLException SQLE) {
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Update ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in Update ", SQLE);
 				}finally{
 					try{
 						if(ps != null){ ps.close(); }
 						if(conn != null){ conn.close(); }
 					}catch(SQLException SQLE){
-						log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+						log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 					}
 				}
 			}
@@ -191,7 +192,7 @@ public class MySQL {
 			try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
 			if(conn != null){
 				try{
@@ -200,13 +201,13 @@ public class MySQL {
                                         ps.setString(2, key);
 					ps.executeUpdate();
 				}catch (SQLException SQLE) {
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Update ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in Update ", SQLE);
 				}finally{
 					try{
 						if(ps != null){ ps.close(); }
 						if(conn != null){ conn.close(); }
 					}catch(SQLException SQLE){
-						log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+						log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 					}
 				}
 			}
@@ -221,7 +222,7 @@ public class MySQL {
     		try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
                         if(conn != null){ //Dont wanna try executing if the connection isnt set
 			try{
@@ -232,14 +233,14 @@ public class MySQL {
     				ValueGet = rs.getString(fieldtoget); //Gets the String Value
     			}
 			}catch (SQLException SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in getValue ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in getValue ", SQLE);
 			}finally{
 				try{ //Connection Closing
 					if(rs != null){ rs.close(); }
 					if(ps != null){ ps.close(); }
 					if(conn != null){ conn.close(); }
 				}catch(SQLException SQLE){
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 				}
 }
 			return ValueGet;
@@ -257,7 +258,7 @@ public class MySQL {
     		try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
                         if(conn != null){ //Dont wanna try executing if the connection isnt set
 			try{
@@ -268,14 +269,14 @@ public class MySQL {
     				ValueGet = rs.getInt(fieldtoget); //Gets the String Value
     			}
 			}catch (SQLException SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in getValue ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in getValue ", SQLE);
 			}finally{
 				try{ //Connection Closing
 					if(rs != null){ rs.close(); }
 					if(ps != null){ ps.close(); }
 					if(conn != null){ conn.close(); }
 				}catch(SQLException SQLE){
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 				}
     }
                         return ValueGet;
@@ -293,7 +294,7 @@ public class MySQL {
     		try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
                         if(conn != null){ //Dont wanna try executing if the connection isnt set
 			try{
@@ -304,14 +305,14 @@ public class MySQL {
     				ValueGet = rs.getDouble(fieldtoget); //Gets the String Value
     			}
 			}catch (SQLException SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in getValue ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in getValue ", SQLE);
 			}finally{
 				try{ //Connection Closing
 					if(rs != null){ rs.close(); }
 					if(ps != null){ ps.close(); }
 					if(conn != null){ conn.close(); }
 				}catch(SQLException SQLE){
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 				}
     }
                         return ValueGet;
@@ -329,7 +330,7 @@ public class MySQL {
     		try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
                         if(conn != null){ //Dont wanna try executing if the connection isnt set
 			try{
@@ -341,14 +342,14 @@ public class MySQL {
     				rs.updateString("town", "Wilderness");
     			}
 			}catch (SQLException SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in getValue ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in getValue ", SQLE);
 			}finally{
 				try{ //Connection Closing
 					if(rs != null){ rs.close(); }
 					if(ps != null){ ps.close(); }
 					if(conn != null){ conn.close(); }
 				}catch(SQLException SQLE){
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 				}
 }
                         }
@@ -358,26 +359,26 @@ public class MySQL {
 }
 
     public void createChunkTable(){
-		String table = ("CREATE TABLE IF NOT EXISTS `chunks` (`ID` INT(255) NOT NULL AUTO_INCREMENT, `coords` varchar(50) NOT NULL, `town` varchar(50) NOT NULL, PRIMARY KEY (`ID`))");
+		String table = ("CREATE TABLE IF NOT EXISTS `chunks` (`ID` INT(255) NOT NULL AUTO_INCREMENT, `coords` varchar(50) NOT NULL, `town` varchar(50) NOT NULL, `owner` varchar(50) NOT NULL, PRIMARY KEY (`ID`))");
 		Connection conn = null;
 		Statement st = null;
 		try{
 			conn = connector.getConnection();
 		}catch(Exception SQLE){
-			log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+			log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 		}
 		if(conn != null){ //Dont wanna try executing if the connection isnt set
 			try{
 				st = conn.createStatement(); //Creates MySQL Statement
 				st.executeUpdate(table); //Creates Table
 			}catch (SQLException SQLE) {
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception creating table ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception creating table ", SQLE);
 			}finally{
 				try{
 					if(st != null && !st.isClosed()){ st.close(); } //Remember to close the connection
 					if(conn != null && !conn.isClosed()){ conn.close(); } //Remember to close the connection
 				}catch(SQLException SQLE){
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 				}
 			}
 
@@ -392,7 +393,7 @@ public class MySQL {
 			try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
 			if(conn != null){
 				try{
@@ -412,13 +413,13 @@ public class MySQL {
                                         ps.setInt(13, 0);
 					ps.executeUpdate(); //Execute InsertChunk
 				} catch (SQLException SQLE) { //May be thrown for cases where Key Already Exists
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Insert ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in Insert ", SQLE);
 				}finally{
 					try{
 						if(ps != null && !ps.isClosed()){ ps.close(); }
 						if(conn != null && !conn.isClosed()){ conn.close(); }
 					}catch(SQLException SQLE){
-						log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+						log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 					}
 				}
 			}
@@ -431,20 +432,20 @@ public class MySQL {
 		try{
 			conn = connector.getConnection();
 		}catch(Exception SQLE){
-			log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+			log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 		}
 		if(conn != null){ //Dont wanna try executing if the connection isnt set
 			try{
 				st = conn.createStatement(); //Creates MySQL Statement
 				st.executeUpdate(table); //Creates Table
 			}catch (SQLException SQLE) {
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception creating table ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception creating table ", SQLE);
 			}finally{
 				try{
 					if(st != null && !st.isClosed()){ st.close(); } //Remember to close the connection
 					if(conn != null && !conn.isClosed()){ conn.close(); } //Remember to close the connection
 				}catch(SQLException SQLE){
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 				}
 			}
 
@@ -459,20 +460,20 @@ public class MySQL {
 		try{
 			conn = connector.getConnection();
 		}catch(Exception SQLE){
-			log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+			log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 		}
 		if(conn != null){ //Dont wanna try executing if the connection isnt set
 			try{
 				st = conn.createStatement(); //Creates MySQL Statement
 				st.executeUpdate(table); //Creates Table
 			}catch (SQLException SQLE) {
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception creating table ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception creating table ", SQLE);
 			}finally{
 				try{
 					if(st != null && !st.isClosed()){ st.close(); } //Remember to close the connection
 					if(conn != null && !conn.isClosed()){ conn.close(); } //Remember to close the connection
 				}catch(SQLException SQLE){
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 				}
 			}
 
@@ -489,7 +490,7 @@ public class MySQL {
     		try{
 				conn = connector.getConnection();
 			}catch(Exception SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception setting Connection ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
 			}
                         if(conn != null){ //Dont wanna try executing if the connection isnt set
 			try{
@@ -501,14 +502,14 @@ public class MySQL {
                                 players.add(rs.getString("username"));
     			}
 			}catch (SQLException SQLE){
-				log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in getValue ", SQLE);
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception in getValue ", SQLE);
 			}finally{
 				try{ //Connection Closing
 					if(rs != null){ rs.close(); }
 					if(ps != null){ ps.close(); }
 					if(conn != null){ conn.close(); }
 				}catch(SQLException SQLE){
-					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception closing connection ", SQLE);
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
 				}
 }
                         }

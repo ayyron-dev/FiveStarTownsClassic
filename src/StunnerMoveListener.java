@@ -1,9 +1,9 @@
 
 public class StunnerMoveListener extends PluginListener{
-    StunnerTowns plugin;
+    FiveStarTowns plugin;
     
     public StunnerMoveListener(){
-        this.plugin = StunnerTowns.getInstance();
+        this.plugin = FiveStarTowns.getInstance();
     }
     
     public void onPlayerMove(Player player, Location from, Location to){

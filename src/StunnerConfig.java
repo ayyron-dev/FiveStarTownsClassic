@@ -3,7 +3,7 @@ import java.util.logging.Logger;
 
 public class StunnerConfig {
     
-    StunnerTowns plugin;
+    FiveStarTowns plugin;
     private boolean useFactions;
     private boolean pvp;
     private boolean protection;
@@ -21,9 +21,9 @@ public class StunnerConfig {
     private Logger log=Logger.getLogger("Minecraft");
     PropertiesFile settings;
     PropertiesFile chat;
-    File dir = new File("plugins/config/StunnerTowns");
+    File dir = new File("plugins/config/FiveStarTowns");
     
-    public StunnerConfig(StunnerTowns plugin){
+    public StunnerConfig(FiveStarTowns plugin){
         this.plugin = plugin;
     }
     
@@ -31,8 +31,8 @@ public class StunnerConfig {
             if(!dir.exists()){
                 dir.mkdirs();
             }
-        settings = new PropertiesFile("plugins/config/StunnerTowns/StunnerTowns.properties");
-        chat = new PropertiesFile("plugins/config/StunnerTowns/StunnerChat.properties");
+        settings = new PropertiesFile("plugins/config/FiveStarTowns/FiveStarTowns.properties");
+        chat = new PropertiesFile("plugins/config/FiveStarTowns/FiveStarChat.properties");
         mysql = settings.getBoolean("use-canary-mysql", true);
         pvp = settings.getBoolean("pvp-off-in-towns", true);
         protection = settings.getBoolean("protection-on-in-towns", true);
@@ -46,7 +46,8 @@ public class StunnerConfig {
         useChat = chat.getBoolean("use-chat", true);
         chatSyntax = chat.getString("chat-syntax", "");
         townColor = chat.getString("town-chat-color","2");
-        
+        log.info("[FiveStarTowns] Plugin Config Loaded!");
+        log.info("[FiveStarTowns] Chat Config Loaded!");
         
     }
     

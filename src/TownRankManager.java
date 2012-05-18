@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class TownRankManager {
     
-    private StunnerTowns plugin;
+    private FiveStarTowns plugin;
 //    private List<Integer> ranknums = new ArrayList<Integer>();
     private HashMap<Integer, Integer> memnum = new HashMap<Integer, Integer>();
     private HashMap<Integer, List> flags = new HashMap<Integer, List>();
@@ -14,11 +14,11 @@ public class TownRankManager {
     private HashMap<Integer, String> mname = new HashMap<Integer, String>();
     private HashMap<Integer, String> aname = new HashMap<Integer, String>();
     private Logger log = Logger.getLogger("Minecraft");
-    File dir = new File("plugins/config/StunnerTowns/Ranks");
-    File file = new File("plugins/config/StunnerTowns/Ranks/TownRanks.txt");
+    File dir = new File("plugins/config/FiveStarTowns/Ranks");
+    File file = new File("plugins/config/FiveStarTowns/Ranks/TownRanks.txt");
     
     public TownRankManager(){
-        plugin = StunnerTowns.getInstance();
+        plugin = FiveStarTowns.getInstance();
     }
     
     public void loadTownRanks(){
@@ -58,9 +58,9 @@ public class TownRankManager {
                 line = reader.readLine();
             }
             reader.close();
-            log.info("[StunnerTowns] Town Ranks Loaded.");
+            log.info("[FiveStarTowns] Town Ranks Loaded.");
         }
-        catch(IOException ex){log.info("[StunnerTowns] Error loading town ranks: " + ex.toString());
+        catch(IOException ex){log.info("[FiveStarTowns] Error loading town ranks: " + ex.toString());
         }
         
         }

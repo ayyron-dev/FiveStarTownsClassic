@@ -11,15 +11,15 @@ import java.sql.SQLException;
 import java.sql.DriverManager;
 
 public class MySQLConnector {
-    File file = new File("plugins/config/StunnerTowns/StandaloneMySQLProps.txt");
-    File dir = new File("plugins/config/StunnerTowns");
-    StunnerTowns plugin;
+    File file = new File("plugins/config/FiveStarTowns/StandaloneMySQLProps.txt");
+    File dir = new File("plugins/config/FiveStarTowns");
+    FiveStarTowns plugin;
     
     static String UserName, Password, databaseName, HostName, UsersTable;
 //    DataBase is a string jdbc:mysql://localhost:3306/
     
     public MySQLConnector(){
-        this.plugin = StunnerTowns.getInstance();
+        this.plugin = FiveStarTowns.getInstance();
     }
     
     public void initialize(){
@@ -29,7 +29,7 @@ public class MySQLConnector {
                 file.createNewFile();
             }
             catch(IOException ex){
-                System.out.println("[Forum Signup] error creating mysql.txt");
+                System.out.println("[FiveStarTowns] error creating mysql.txt");
             }
             
             try{
@@ -40,7 +40,7 @@ public class MySQLConnector {
                 writer.close();
             }
             catch(IOException ex){
-                System.out.println("[Forum Signup] error creating values for mysql.txt");
+                System.out.println("[FiveStarTowns] error creating values for mysql.txt");
             }
             
         }
@@ -75,13 +75,22 @@ public class MySQLConnector {
     }
     
     public Connection getConnection() throws SQLException{
-        if(plugin.getConfig().getMySQL()){
-            return etc.getConnection().getConnection();
+        CanaryConnection canary = null;
+        try{
+            canary = etc.getConnection();
+        }
+        catch(SQLException ex){
+            System.out.println("[FiveStarTowns] Sql Error: " + ex.toString());
+        }
+        if(canary != null){
+            return canary.getConnection();
         }
         
         try{
             Class.forName("com.mysql.jdbc.Driver");}
-        catch(ClassNotFoundException ex){}
+        catch(ClassNotFoundException ex){
+            System.out.println("[FiveStarTowns] Error finding Driver: " + ex.toString());
+        }
         String DataBase = "jdbc:mysql://" + HostName +"/" + databaseName;
         Connection conn = DriverManager.getConnection(DataBase, UserName, Password);
         return conn;

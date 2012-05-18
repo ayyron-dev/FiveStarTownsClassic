@@ -6,10 +6,10 @@ public class TownPlayer {
     private boolean isOwner = false;
     private boolean isAssistant = false;
     MySQL mysql = new MySQL();
-    private StunnerTowns plugin;
+    private FiveStarTowns plugin;
     
     public TownPlayer(Player player){
-        plugin = StunnerTowns.getInstance();
+        plugin = FiveStarTowns.getInstance();
         name = player.getOfflineName();
         townName = mysql.getStringValue(name, "townsusers", "town", "username");
         if(name.equalsIgnoreCase(mysql.getStringValue(townName, "towns", "owner", "name"))){

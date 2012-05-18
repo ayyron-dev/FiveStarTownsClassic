@@ -4,16 +4,16 @@ import java.util.logging.Logger;
 
 public class AssistantCommandListener extends PluginListener{
     private Logger log=Logger.getLogger("Minecraft");
-    private StunnerTowns plugin;
+    private FiveStarTowns plugin;
     private StunnerCommandListener scl;
     
     public AssistantCommandListener(){
-        this.plugin = StunnerTowns.getInstance();
+        this.plugin = FiveStarTowns.getInstance();
         scl = plugin.getCommandListener();
     }
     
     public boolean onCommand(Player player, String[] cmd){
-        if(player.canUseCommand("/stunnertowns") && (cmd[0].equalsIgnoreCase("/town") || cmd[0].equalsIgnoreCase("/t"))){
+        if(player.canUseCommand("/fivestartowns") && (cmd[0].equalsIgnoreCase("/town") || cmd[0].equalsIgnoreCase("/t"))){
         TownPlayer tp = plugin.getManager().getTownPlayer(player.getOfflineName());
         if(tp!=null && (tp.isAssistant() || tp.isOwner())){
     
@@ -118,7 +118,7 @@ public class AssistantCommandListener extends PluginListener{
     //                                  //
     //            Invite Town           //
     //                                  //
-            if(cmd[1].equalsIgnoreCase("invite") && tp != null){
+            if(cmd[1].equalsIgnoreCase("invite")){
                 if(cmd.length <= 2){
                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fToo few Arguments to invite a new player.");
                     player.sendMessage("    §a- §f/town invite [playername]");
@@ -148,6 +148,23 @@ public class AssistantCommandListener extends PluginListener{
                 return true;
                 
             }
+            
+    //                                  //
+    //    kick player from Town         //
+    //                                  //
+            if(cmd[1].equalsIgnoreCase("kick") && cmd.length == 3){
+                MySQL mysql = new MySQL();
+                if(mysql.keyExists(cmd[2], "townsusers", "username")){
+                    mysql.delete("townsusers", "username", cmd[2]);
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+cmd[2]+"§f has been kicked from your town.");
+                    return true;
+                }
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+cmd[2]+"§f does not seem to be in your town.");
+                return true;
+            }
+            
+            
+            
         
         
         }

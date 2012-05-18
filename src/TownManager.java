@@ -10,11 +10,11 @@ import java.util.logging.Logger;
 public class TownManager {
     
     private Logger log=Logger.getLogger("Minecraft");
-    private StunnerTowns plugin;
+    private FiveStarTowns plugin;
     MySQL mysql = new MySQL();
     public HashMap<String, String> chunkmap = new HashMap();
     
-    public TownManager(StunnerTowns plugin){
+    public TownManager(FiveStarTowns plugin){
         this.plugin = plugin;
     }
     
@@ -144,7 +144,7 @@ public class TownManager {
         
         }
         catch(SQLException e){
-            log.severe("[StunnerTowns] - SQL Exception creating HashMap: " + e.toString());
+            log.severe("[FiveStarTowns] - SQL Exception creating HashMap: " + e.toString());
         }
         finally {
             try {
@@ -159,10 +159,10 @@ public class TownManager {
               }
             }
         catch (SQLException e) {
-            log.severe("[StunnerTowns] - SQL Exception closing HashMap connection: " + e.toString());
+            log.severe("[FiveStarTowns] - SQL Exception closing HashMap connection: " + e.toString());
         }
         }
-        log.info("[StunnerTowns] Chunk Data Loaded");
+        log.info("[FiveStarTowns] Chunk Data Loaded");
     }
 
 

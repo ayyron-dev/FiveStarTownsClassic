@@ -17,11 +17,11 @@ public class Town {
     private boolean creepernerf = false;
     MySQL mysql = new MySQL();
     private int bonusChunks;
-    private StunnerTowns plugin;
+    private FiveStarTowns plugin;
     private TownRankManager trm;
     
     public Town(String townName){
-        plugin = StunnerTowns.getInstance();
+        plugin = FiveStarTowns.getInstance();
         trm = plugin.getTownRankManager();
         members = mysql.getTownPlayers(townName);
         membernum = members.size();
@@ -194,6 +194,15 @@ public class Town {
         }
         return sb.toString();
     }
+    
+    public String getAvailableFlags(){
+        StringBuilder sb = new StringBuilder();
+        List flags = trm.getTownFlags(rank);
+        for(int i = 0; i < flags.size() ; i++){
+            sb.append("|").append(flags.get(i)).append("|");
+        }
+        return sb.toString();
+    } 
     
     public String getWelcome(){
         return mysql.getStringValue(name, "towns", "welcomemsg", "name");

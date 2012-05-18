@@ -7,17 +7,17 @@ import java.util.logging.Logger;
 
 public class StunnerChat extends PluginListener{
     
-    StunnerTowns plugin;
+    FiveStarTowns plugin;
     private Logger log=Logger.getLogger("Minecraft");
     HashMap<String, String> nickname = new HashMap();
     HashMap<String, String> pcolor = new HashMap();
     HashMap<String, String> groupnick = new HashMap();
     ArrayList colorchars = new ArrayList();
-    File file1 = new File("plugins/config/StunnerTowns/nicknames.txt");
-    File file3 = new File("plugins/config/StunnerTowns/groupnicknames.txt");
+    File file1 = new File("plugins/config/FiveStarTowns/nicknames.txt");
+    File file3 = new File("plugins/config/FiveStarTowns/groupnicknames.txt");
     
     public StunnerChat() {
-        plugin = StunnerTowns.getInstance();
+        plugin = FiveStarTowns.getInstance();
     }
     
     public void loadFiles(){
@@ -37,6 +37,7 @@ public class StunnerChat extends PluginListener{
                 line1 = read1.readLine();
             }
             read1.close();
+            log.info("[FiveStarTowns] Player NickNames Loaded!");
 //            load group nicknames
             BufferedReader read3 = new BufferedReader(new FileReader(file3));
             String line3 = read3.readLine();
@@ -46,11 +47,11 @@ public class StunnerChat extends PluginListener{
                 line3 = read3.readLine();
             }
             read3.close();
+            log.info("[FiveStarTowns] Group NickNames Loaded!");
         }
         catch(IOException e){
-            log.severe("[StunnerTowns] Error Creating/Loading Files: " + e.toString());
+            log.severe("[FiveStarTowns] Error Creating/Loading Files: " + e.toString());
         }
-        log.info("[StunnerTowns] Chat config loaded.");
     }
     
     
@@ -109,7 +110,7 @@ public class StunnerChat extends PluginListener{
     }
     
         public boolean onCommand(Player player, String[] cmd){
-        if(cmd[0].equalsIgnoreCase("/pnick") && player.canUseCommand("/stunnerchat")){
+        if(cmd[0].equalsIgnoreCase("/pnick") && player.canUseCommand("/fivestarchat")){
             if(cmd.length > 1){
                 if(nickname.containsKey(cmd[1])){
                     nickname.remove(cmd[1]);
@@ -125,7 +126,7 @@ public class StunnerChat extends PluginListener{
             }
             return false;
         }
-        if(cmd[0].equalsIgnoreCase("/gnick") && player.canUseCommand("/stunnerchat") && cmd.length == 3){
+        if(cmd[0].equalsIgnoreCase("/gnick") && player.canUseCommand("/fivestarchat") && cmd.length == 3){
             if(groupnick.containsKey(cmd[1])){
                     groupnick.remove(cmd[1]);
                 }
@@ -161,7 +162,7 @@ public class StunnerChat extends PluginListener{
         player.sendMessage("§2Chat Config Changed.");
       }
       catch(IOException e){
-          log.severe("[StunnerTowns] Error Writing Files: " + e.toString());
+          log.severe("[FiveStarTowns] Error Writing Files: " + e.toString());
       }
     }
     

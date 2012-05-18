@@ -3,14 +3,14 @@ import java.util.logging.Logger;
 
 public class MemberCommandListener extends PluginListener{
     private Logger log=Logger.getLogger("Minecraft");
-    private StunnerTowns plugin;
+    private FiveStarTowns plugin;
     
     public MemberCommandListener(){
-        this.plugin = StunnerTowns.getInstance();
+        this.plugin = FiveStarTowns.getInstance();
     }
     
     public boolean onCommand(Player player, String[] cmd){
-        if(player.canUseCommand("/stunnertowns") && (cmd[0].equalsIgnoreCase("/town") || cmd[0].equalsIgnoreCase("/t"))){
+        if(player.canUseCommand("/fivestartowns") && (cmd[0].equalsIgnoreCase("/town") || cmd[0].equalsIgnoreCase("/t"))){
         TownPlayer tp = plugin.getManager().getTownPlayer(player.getOfflineName());
         if(tp!=null){
     //                                  //
@@ -21,7 +21,7 @@ public class MemberCommandListener extends PluginListener{
                 mysql.delete("townsusers", "username", tp.getName());
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fYou have left your town");
                 Town town = tp.getTown();
-                if(town.getMembers().size() < 1){
+                if(town.getMembers().size() < 1 || tp.isOwner()){
                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fNo members left in town, town has been deleted.");
                     mysql.delete("towns", "name", tp.getTownName());
                 }
@@ -75,6 +75,7 @@ public class MemberCommandListener extends PluginListener{
                 }
         
             }
+            
             
             
             

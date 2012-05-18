@@ -1,9 +1,9 @@
 
 public class StunnerBlockListener {
-    StunnerTowns plugin;
+    FiveStarTowns plugin;
     
     public StunnerBlockListener(){
-        plugin = StunnerTowns.getInstance();
+        plugin = FiveStarTowns.getInstance();
     }
     
         public boolean onBlockDestroy(Player player, Block block){

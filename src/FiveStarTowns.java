@@ -3,12 +3,12 @@ import java.util.logging.Logger;
 
 
 
-public class StunnerTowns extends Plugin{
+public class FiveStarTowns extends Plugin{
     private Logger log=Logger.getLogger("Minecraft");
-    public static String name = "StunnerTowns";
-    public static String version = "Beta Build 1";
+    public static String name = "FiveStarTowns";
+    public static String version = "Beta Build 3";
     public static String creator = "5*stunner";
-    private static StunnerTowns instance;
+    private static FiveStarTowns instance;
     private StunnerConfig stunnerconfig;
     private TownManager townmanager;
     private StunnerCommandListener scl;
@@ -16,7 +16,7 @@ public class StunnerTowns extends Plugin{
     private StunnerChat stunnerchat;
     private MySQLConnector connector = new MySQLConnector();
     private TownRankManager townrank;
-    private MayorCommandListener mayorcommandlistener;
+    private OwnerCommandListener mayorcommandlistener;
     private AssistantCommandListener assistantcommandlistener;
     private MemberCommandListener membercommandlistener;
     
@@ -31,14 +31,13 @@ public class StunnerTowns extends Plugin{
         stunnerconfig = new StunnerConfig(this);
         townmanager = new TownManager(this);
         scl = new StunnerCommandListener();
-        mayorcommandlistener = new MayorCommandListener();
+        mayorcommandlistener = new OwnerCommandListener();
         assistantcommandlistener = new AssistantCommandListener();
         membercommandlistener = new MemberCommandListener();
         sml = new StunnerMoveListener();
         stunnerchat = new StunnerChat();
         townrank = new TownRankManager();
         log.info(name + " version " + version + " enabled.");
-        connector.initialize();
         townrank.loadTownRanks();
         MySQL mysql = new MySQL();
         mysql.createChunkTable();
@@ -59,12 +58,11 @@ public class StunnerTowns extends Plugin{
         etc.getLoader().addListener(PluginLoader.Hook.PLAYER_MOVE, sml, this, PluginListener.Priority.MEDIUM);
         if(getConfig().useChat()){
             etc.getLoader().addListener(PluginLoader.Hook.CHAT, stunnerchat, this, PluginListener.Priority.MEDIUM);
+            etc.getLoader().addListener(PluginLoader.Hook.COMMAND, stunnerchat, this, PluginListener.Priority.MEDIUM);
         }
-        etc.getLoader().addListener(PluginLoader.Hook.COMMAND, stunnerchat, this, PluginListener.Priority.MEDIUM);
-
     }
     
-    public static StunnerTowns getInstance(){
+    public static FiveStarTowns getInstance(){
         return instance;
     }
     
