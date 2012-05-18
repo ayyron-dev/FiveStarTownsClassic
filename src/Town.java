@@ -115,6 +115,10 @@ public class Town {
         return rank;
     }
     
+    public String getRankName(){
+        return trm.getTownRankName(rank);
+    }
+    
     public String getMayorName(){
         return trm.getTownMayorName(rank);
     }
@@ -171,6 +175,40 @@ public class Town {
         return friendlyfire;
     }
     
+    public String getFlagString(){
+        StringBuilder sb = new StringBuilder();
+        if(protection){
+            sb.append("|Protected|");
+        }
+        if(sanctuary){
+            sb.append("|Sanctuary|");
+        }
+        if(nopvp){
+            sb.append("|No-PvP|");
+        }
+        if(creepernerf){
+            sb.append("|No-Creeper|");
+        }
+        if(friendlyfire){
+            sb.append("|Friendly Fire|");
+        }
+        return sb.toString();
+    }
     
+    public String getWelcome(){
+        return mysql.getStringValue(name, "towns", "welcomemsg", "name");
+    }
+    
+    public String getFarewell(){
+        return mysql.getStringValue(name, "towns", "farewellmsg", "name");
+    }
+    
+    public void setFarewell(String msg){
+        mysql.updateStringEntry(name, "name", "towns", msg, "farewellmsg");
+    }
+    
+    public void setWelcome(String msg){
+        mysql.updateStringEntry(name, "name", "towns", msg, "welcomemsg");
+    }
     
 }

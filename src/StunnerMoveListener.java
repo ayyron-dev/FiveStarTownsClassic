@@ -32,16 +32,24 @@ public class StunnerMoveListener extends PluginListener{
             return;
         }
         if(!chunk1.equalsIgnoreCase(chunk2)){
-            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are now entering: §b" + chunk2 + " Territory.");
-            if(plugin.getConfig().getPvP() && !chunk2.equalsIgnoreCase("Wilderness")){
-                player.sendMessage("  §a- §bPvP §fis §bdisabled §fhere.");
-            }
             if(chunk2.equalsIgnoreCase("Wilderness")){
+                Town town = plugin.getManager().getTown(chunk1);
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are now entering: §b" + chunk2 + " Territory.");
+                if(town != null){
+                    player.sendMessage("  §a- §f" + town.getFarewell());
+                }
                 player.sendMessage("  §a- §bPvP §fis §benabled §fhere.");
+                return;
             }
-            if(plugin.getConfig().getProtection() && !chunk2.equalsIgnoreCase("Wilderness")){
-                player.sendMessage("  §a- §fOnly Town Residents can build here.");
+            Town town = plugin.getManager().getTown(chunk2);
+            if(town != null){
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fNow Entering: §b" + town.getRankName()+ " " + town.getName() + " Territory§f.");
+                player.sendMessage("§a"+town.getMayorName()+"§b:§f " + town.getOwner());
+                player.sendMessage("§aFlags§b:§f " + town.getFlagString());
+                player.sendMessage("  §a- §f" + town.getWelcome());
+                return;
             }
+
         }
         
         

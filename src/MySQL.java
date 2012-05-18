@@ -396,7 +396,7 @@ public class MySQL {
 			}
 			if(conn != null){
 				try{
-					ps = conn.prepareStatement("INSERT INTO towns (name, owner, assistant, bonus, balance, farewellmsg, welcomemsg, alliance, friendlyfire, nopvp, protected, crepernerf, sanctuary) VALUES(?,?,?,?,?,?,?,?,?)"); //For multiple values use Table (Value1, Value2, Value3) VALUES(?,?,?)  then ps.setString(1, val); ps.setString(2, val); ps.setString(3, val);
+					ps = conn.prepareStatement("INSERT INTO towns (name, owner, assistant, bonus, balance, farewellmsg, welcomemsg, alliance, friendlyfire, nopvp, protected, creepernerf, sanctuary) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)"); //For multiple values use Table (Value1, Value2, Value3) VALUES(?,?,?)  then ps.setString(1, val); ps.setString(2, val); ps.setString(3, val);
 					ps.setString(1, name);
                                         ps.setString(2, owner);
                                         ps.setString(3, assistant);
@@ -405,7 +405,11 @@ public class MySQL {
                                         ps.setString(6, "You are now leaving " + name);
                                         ps.setString(7, "You are now entering " + name);
                                         ps.setString(8, "");
-                                        ps.setString(9, "false");
+                                        ps.setInt(9, 0);
+                                        ps.setInt(10, 0);
+                                        ps.setInt(11, 0);
+                                        ps.setInt(12, 0);
+                                        ps.setInt(13, 0);
 					ps.executeUpdate(); //Execute InsertChunk
 				} catch (SQLException SQLE) { //May be thrown for cases where Key Already Exists
 					log.log(Level.SEVERE, "[StunnerTowns] - SQL Exception in Insert ", SQLE);

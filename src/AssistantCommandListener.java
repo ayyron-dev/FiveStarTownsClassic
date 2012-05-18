@@ -5,9 +5,11 @@ import java.util.logging.Logger;
 public class AssistantCommandListener extends PluginListener{
     private Logger log=Logger.getLogger("Minecraft");
     private StunnerTowns plugin;
+    private StunnerCommandListener scl;
     
     public AssistantCommandListener(){
         this.plugin = StunnerTowns.getInstance();
+        scl = plugin.getCommandListener();
     }
     
     public boolean onCommand(Player player, String[] cmd){
@@ -88,6 +90,64 @@ public class AssistantCommandListener extends PluginListener{
                         return true;
                     }
                 }
+                
+    //                                      //
+    //            Buy more Land             //
+    //                                      //
+            if(cmd[1].equalsIgnoreCase("buyland") && cmd.length == 3){
+                if(plugin.getConfig().getUseDCO()){
+                    String moneyname = (String)etc.getLoader().callCustomHook("dCBalance", new Object[] {"Money-Name"});
+                    String balance = String.valueOf(tp.getTown().getBalance());
+                    int num = Integer.valueOf(cmd[2]);
+                    double cost = Double.valueOf(cmd[2]) * plugin.getConfig().getLandCost();
+                    Town town = tp.getTown();
+                    if(cost <= town.getBalance()){
+                        town.removeBalance(cost);
+                        town.addBonus(num);
+                        player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fYou town has baught §b" + num +"§f new plots.");
+                        player.sendMessage("    §a- §fYou towns bank balance is: §b" + town.getBalance() +" "+ moneyname);
+                        return true;
+                    }
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a]  §fYou can't afford this. You towns bank balance is: §b" + balance +" "+ moneyname);
+                    return true;
+                }
+        
+            }
+            
+            
+    //                                  //
+    //            Invite Town           //
+    //                                  //
+            if(cmd[1].equalsIgnoreCase("invite") && tp != null){
+                if(cmd.length <= 2){
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fToo few Arguments to invite a new player.");
+                    player.sendMessage("    §a- §f/town invite [playername]");
+                    return true;
+                }
+                Player iplayer = etc.getServer().getPlayer(cmd[2]);
+                if(iplayer == null){
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThat player is not online or doesn't exists.");
+                    return true;
+                }
+                TownPlayer itp = plugin.getManager().getTownPlayer(iplayer.getOfflineName());
+                if(itp != null){
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThat player is already in a town.");
+                    return true;
+                }
+                
+                if(scl.acceptMap.containsKey(iplayer) && scl.acceptMap.get(iplayer).equals(player)){
+                    iplayer.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+player.getOfflineName()+"§f has invited you to §b"+tp.getTownName()+"§f.");
+                    iplayer.sendMessage("    §a- To Accept Do:  §f/town accept [townname]");
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+iplayer.getOfflineName()+"§f has been invited your town.");
+                    return true;
+                }
+                scl.acceptMap.put(iplayer, player);
+                iplayer.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+player.getOfflineName()+"§f has invited you to §b"+tp.getTownName()+"§f.");
+                iplayer.sendMessage("    §a- To Accept Do:  §f/town accept [townname]");
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+iplayer.getOfflineName()+"§f has been invited your town.");
+                return true;
+                
+            }
         
         
         }

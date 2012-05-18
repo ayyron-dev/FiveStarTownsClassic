@@ -34,13 +34,20 @@ public class StunnerCommandListener extends PluginListener{
                     if(plugin.getManager().containsKey(chunky)){
                         townName = plugin.getManager().get(chunky);
                     }
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThis Land is: §b" + townName + " Territory§f.");
-                    if(!townName.equalsIgnoreCase("Wilderness")){
-                        String members = plugin.getManager().getTown(townName).getMembers().toString();
-                        player.sendMessage("§a=========================================================");
-                        player.sendMessage("  §a-§bMembers§a- §f" + members);
+                    Town town = plugin.getManager().getTown(townName);
+                    
+                    if(town != null){
+                        int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus(); 
+                        player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThis Land is: §b" + town.getRankName()+ " " + townName + " Territory§f.");
+                        player.sendMessage("§a"+town.getMayorName()+"§b:§f " + town.getOwner());
+                        player.sendMessage("§a"+town.getAssistantName()+"§b:§f " + town.getAssistant());
+                        player.sendMessage("§aFlags§b:§f " + town.getFlagString());
+                        player.sendMessage("§aClaimed Land§b:§f " + String.valueOf(plugin.getManager().chunkAmount(town.getName())) + "/" + String.valueOf(chunksallowed));
+                        player.sendMessage("§aMembers§b:§f " + town.getMembers().toString());
                         return true;
                     }
+                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThis Land is: §b" + townName + " Territory§f.");
+                    
                     return true;
                 }
 
@@ -130,9 +137,31 @@ public class StunnerCommandListener extends PluginListener{
             
             
             
+                if(player.isAdmin()){
+                    if(cmd[1].equalsIgnoreCase("addbonus") && cmd.length == 4){
+                        Town town = plugin.getManager().getTown(cmd[2]);
+                        if(town != null){
+                            town.addBonus(Integer.valueOf(cmd[3]));
+                            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f Added bonus land plots to: §b" + town.getName());
+                            return true;
+                        }
+                        player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f Town does not exist: §b" + cmd[2]);
+                        return true;
+                    }
+                    
+                    if(cmd[1].equalsIgnoreCase("setbonus") && cmd.length == 4){
+                        Town town = plugin.getManager().getTown(cmd[2]);
+                        if(town != null){
+                            town.setBonus(Integer.valueOf(cmd[3]));
+                            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f Set bonus land plots of: §b" + town.getName());
+                            return true;
+                        }
+                        player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f Town does not exist: §b" + cmd[2]);
+                        return true;
+                    }
+                } 
                 help(player);
                 return true;
-
             }
         return false;
     }

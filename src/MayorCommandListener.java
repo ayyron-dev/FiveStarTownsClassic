@@ -20,7 +20,7 @@ public class MayorCommandListener extends PluginListener{
 //                Disband Command           //
 //                                          //
                 
-            if(cmd[1].equalsIgnoreCase("disband") && tp != null && tp.isOwner()){
+            if(cmd[1].equalsIgnoreCase("disband")){
                     Town town = tp.getTown();
                     MySQL mysql = new MySQL();
                     mysql.removeChunk(town.getName());
@@ -36,7 +36,7 @@ public class MayorCommandListener extends PluginListener{
     //                                  //
     //            Set Assistant         //
     //                                  //
-            if((cmd[1].equalsIgnoreCase("setassistant") || cmd[1].equalsIgnoreCase("seta ")) && tp != null && tp.isOwner() && cmd.length == 3){
+            if((cmd[1].equalsIgnoreCase("setassistant") || cmd[1].equalsIgnoreCase("seta ")) && cmd.length == 3){
                 MySQL mysql = new MySQL();
                 Player aplayer = etc.getServer().getPlayer(cmd[2]);
                 if(aplayer == null){
@@ -48,41 +48,54 @@ public class MayorCommandListener extends PluginListener{
                 return true;
             }
     
-    //                                  //
-    //            Invite Town           //
-    //                                  //
-            if(cmd[1].equalsIgnoreCase("invite") && tp != null && (tp.isOwner() || tp.isAssistant())){
-                if(cmd.length <= 2){
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fToo few Arguments to invite a new player.");
-                    player.sendMessage("    §a- §f/town invite [playername]");
-                    return true;
-                }
-                Player iplayer = etc.getServer().getPlayer(cmd[2]);
-                if(iplayer == null){
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThat player is not online or doesn't exists.");
-                    return true;
-                }
-                TownPlayer itp = plugin.getManager().getTownPlayer(iplayer.getOfflineName());
-                if(itp != null){
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThat player is already in a town.");
-                    return true;
-                }
-                
-                if(scl.acceptMap.containsKey(iplayer) && scl.acceptMap.get(iplayer).equals(player)){
-                    iplayer.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+player.getOfflineName()+"§f has invited you to §b"+tp.getTownName()+"§f.");
-                    iplayer.sendMessage("    §a- To Accept Do:  §f/town accept [townname]");
-                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+iplayer.getOfflineName()+"§f has been invited your town.");
-                    return true;
-                }
-                scl.acceptMap.put(iplayer, player);
-                iplayer.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+player.getOfflineName()+"§f has invited you to §b"+tp.getTownName()+"§f.");
-                iplayer.sendMessage("    §a- To Accept Do:  §f/town accept [townname]");
-                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+iplayer.getOfflineName()+"§f has been invited your town.");
-                return true;
-                
-            }
+
     
+    //                                  //
+    //            set farewell          //
+    //                                  //  
+            
+            if(cmd[1].equalsIgnoreCase("setwelcome") && cmd.length > 2){
+                StringBuilder sb = new StringBuilder();
+                for(int i = 2; i < cmd.length ; i++){
+                    sb.append(cmd[i]).append(" ");
+                }
+                tp.getTown().setWelcome(sb.toString().trim());
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fWelcome Message set to: " + sb.toString().trim());
+                return true;
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+    //                                  //
+    //            set farewell           //
+    //                                  //      
+            
+            if(cmd[1].equalsIgnoreCase("setfarewell") && cmd.length > 2){
+                StringBuilder sb = new StringBuilder();
+                for(int i = 2; i < cmd.length ; i++){
+                    sb.append(cmd[i]).append(" ");
+                }
+                tp.getTown().setFarewell(sb.toString().trim());
+                player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFarewell Message set to: " + sb.toString().trim());
+                return true;
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
         }
+        
         }
         return false;
     }
