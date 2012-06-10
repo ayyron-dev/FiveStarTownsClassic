@@ -1,5 +1,6 @@
 
-public class TownPlayer {
+
+public class TownPlayer{
     private String name;
     private String townName;
     private Town town;

@@ -34,12 +34,8 @@ public class StunnerConfig {
         settings = new PropertiesFile("plugins/config/FiveStarTowns/FiveStarTowns.properties");
         chat = new PropertiesFile("plugins/config/FiveStarTowns/FiveStarChat.properties");
         mysql = settings.getBoolean("use-canary-mysql", true);
-        pvp = settings.getBoolean("pvp-off-in-towns", true);
-        protection = settings.getBoolean("protection-on-in-towns", true);
-        claimrank = settings.getInt("rank-to-claim-land", 1);
         servername = settings.getString("server-name", "Server");
         chunkmultiplier = settings.getInt("plot-multiplier-per-member", 3);
-        useFactions = settings.getBoolean("use-factions", false);
         townCost = settings.getDouble("town-cost", 1000);
         useDCO = settings.getBoolean("use-dConomy", true);
         landCost = settings.getDouble("bonus-land-cost", 100);

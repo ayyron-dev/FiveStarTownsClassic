@@ -1,3 +1,4 @@
+
 import java.util.logging.Logger;
 
 
@@ -82,7 +83,7 @@ public class MemberCommandListener extends PluginListener{
             
             
             
-
+            plugin.getAssistantCommandListener().onCommand(player, cmd);
         }
         }
         return false;

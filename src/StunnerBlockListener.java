@@ -7,7 +7,6 @@ public class StunnerBlockListener {
     }
     
         public boolean onBlockDestroy(Player player, Block block){
-        if(plugin.getConfig().getProtection()){
             int x = (int)block.getX() >> 4;
             int z = (int)block.getZ() >> 4;
             String chunky = x + ":" + z;
@@ -26,12 +25,10 @@ public class StunnerBlockListener {
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f This is §b" + plugin.getManager().get(chunky) + " Territory §f you can't §bBuild §fhere.");
                 return true;
             }
-        }
         return false;
     }
     
         public boolean onBlockCreate(Player player, Block blockPlaced, Block blockClicked, int itemInHand){
-        if(plugin.getConfig().getProtection()){
             int x = (int)blockClicked.getX() >> 4;
             int z = (int)blockClicked.getZ() >> 4;
             String chunky = x + ":" + z;
@@ -50,7 +47,6 @@ public class StunnerBlockListener {
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f This is §b" + plugin.getManager().get(chunky) + " Territory §f you can't §bBuild §fhere.");
                 return true;
             }
-        }
         return false;
     }
 }

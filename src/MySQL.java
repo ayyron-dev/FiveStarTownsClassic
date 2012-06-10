@@ -385,6 +385,34 @@ public class MySQL {
     }
       
 }
+    
+    public void createExpTable(){
+		String table = ("CREATE TABLE IF NOT EXISTS `experience` (`ID` INT(255) NOT NULL AUTO_INCREMENT, `clan` varchar(50) NOT NULL, `xp` INT(50) NOT NULL, PRIMARY KEY (`ID`))");
+		Connection conn = null;
+		Statement st = null;
+		try{
+			conn = connector.getConnection();
+		}catch(Exception SQLE){
+			log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception setting Connection ", SQLE);
+		}
+		if(conn != null){ //Dont wanna try executing if the connection isnt set
+			try{
+				st = conn.createStatement(); //Creates MySQL Statement
+				st.executeUpdate(table); //Creates Table
+			}catch (SQLException SQLE) {
+				log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception creating table ", SQLE);
+			}finally{
+				try{
+					if(st != null && !st.isClosed()){ st.close(); } //Remember to close the connection
+					if(conn != null && !conn.isClosed()){ conn.close(); } //Remember to close the connection
+				}catch(SQLException SQLE){
+					log.log(Level.SEVERE, "[FiveStarTowns] - SQL Exception closing connection ", SQLE);
+				}
+			}
+
+    }
+      
+}
 
     
             public void insertTown(String name, String owner, String assistant){

@@ -1,4 +1,5 @@
 
+
 import java.util.logging.Logger;
 
 
@@ -168,6 +169,7 @@ public class AssistantCommandListener extends PluginListener{
         
         
         }
+        plugin.getOwnerCommandListener().onCommand(player, cmd);
         }
         return false;
     } 

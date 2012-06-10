@@ -196,7 +196,7 @@ public class StunnerCommandListener extends PluginListener{
                         return true;
                     }
                 } 
-                help(player);
+                plugin.getMemberCommandListener().onCommand(player, cmd);
                 return true;
             }
         return false;
@@ -206,8 +206,8 @@ public class StunnerCommandListener extends PluginListener{
         public void help(Player player){
             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns help");
             player.sendMessage("  §a- /t info [town]    §fget this towns info");
-            player.sendMessage("  §a- /t here  §fSee who owns the town where you are standing");
-            player.sendMessage("  §a- /t accept [townname]  §faccept an invitation to a town");
+            player.sendMessage("  §a- /t here  §fSee who owns the town where you are standing, if anyoneypooooooooooooooujhhhhhh");
+            player.sendMessage("  §a- /t accept [townname]  §fac cept an invitation to a town");
             player.sendMessage("  §a- /t create  [townname]§fcreate a town");
             player.sendMessage("  §a- /t help §fview this menu");
             player.sendMessage("  §a- /t help [member|m]  §ftown member help");
@@ -220,7 +220,7 @@ public class StunnerCommandListener extends PluginListener{
             if(tp != null && (tp.isAssistant() || tp.isOwner())){
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns Member Help");
                 player.sendMessage("  §a- /t leave    §fleave your town");
-                player.sendMessage("  §a- /t info §ftoggle flags on or off");
+                player.sendMessage("  §a- /t info §fget info about your town");
                 if(plugin.getConfig().getUseDCO()){
                     player.sendMessage("  §a- /t donate [amount]  §fdonate money to your town");
                     player.sendMessage("  §a- /t bank §fview your towns bank account");

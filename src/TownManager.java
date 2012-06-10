@@ -6,8 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-
-public class TownManager {
+public class TownManager{
     
     private Logger log=Logger.getLogger("Minecraft");
     private FiveStarTowns plugin;

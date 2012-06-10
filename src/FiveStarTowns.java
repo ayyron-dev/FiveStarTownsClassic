@@ -1,12 +1,10 @@
 
 import java.util.logging.Logger;
 
-
-
 public class FiveStarTowns extends Plugin{
     private Logger log=Logger.getLogger("Minecraft");
     public static String name = "FiveStarTowns";
-    public static String version = "Beta Build 3";
+    public static String version = "Beta Build 4";
     public static String creator = "5*stunner";
     private static FiveStarTowns instance;
     private StunnerConfig stunnerconfig;
@@ -81,5 +79,19 @@ public class FiveStarTowns extends Plugin{
     public StunnerCommandListener getCommandListener(){
         return scl;
     }
+    
+    public MemberCommandListener getMemberCommandListener(){
+        return membercommandlistener;
+    }
+    
+    public AssistantCommandListener getAssistantCommandListener(){
+        return assistantcommandlistener;
+    }
+    
+    public OwnerCommandListener getOwnerCommandListener(){
+        return mayorcommandlistener;
+    }
+    
+    
     
 }

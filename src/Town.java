@@ -1,7 +1,8 @@
+
+
 import java.util.List;
 
-
-public class Town {
+public class Town{
     
     private List members;
     private String name;
@@ -21,7 +22,9 @@ public class Town {
     private TownRankManager trm;
     
     public Town(String townName){
-        plugin = FiveStarTowns.getInstance();
+//        Class fst = Class.forName("FiveStarTowns");
+        plugin = FiveStarTowns.getInstance(); 
+//        plugin = (FiveStarTowns)Class.forName("FiveStarTowns")
         trm = plugin.getTownRankManager();
         members = mysql.getTownPlayers(townName);
         membernum = members.size();
