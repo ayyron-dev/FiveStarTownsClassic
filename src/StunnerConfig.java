@@ -205,7 +205,7 @@ public class StunnerConfig {
      *
      * @return
      */
-    public String getPillarProtection(){
+    public boolean getPillarProtection(){
         return pillarProtection;
     }
 }
