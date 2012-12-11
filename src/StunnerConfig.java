@@ -26,6 +26,7 @@ public class StunnerConfig {
     private String availableWorlds;
     private boolean useMysql;
     private String os;
+    private boolean pillarProtection;
     
     private Logger log=Logger.getLogger("Minecraft");
     PropertiesFile settings;
@@ -61,6 +62,7 @@ public class StunnerConfig {
         availableWorlds = chat.getString("available-worlds", "");
         useMysql = settings.getBoolean("use-mysql", true);
         os = settings.getString("operating-system", "unix");
+        pillarProtection = settings.getBoolean("use-extra-pillar-protection", false);
         log.info("[FiveStarTowns] Plugin Config Loaded!");
         log.info("[FiveStarTowns] Chat Config Loaded!");
         
@@ -197,5 +199,13 @@ public class StunnerConfig {
      */
     public String getOS(){
         return os;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public String getPillarProtection(){
+        return pillarProtection;
     }
 }
