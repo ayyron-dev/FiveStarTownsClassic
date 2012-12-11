@@ -1,4 +1,3 @@
-
 /**
  *
  * @author Somners
@@ -66,6 +65,17 @@ public class StunnerBlockListener extends PluginListener{
             }
             if(!plugin.getManager().get(chunky).equalsIgnoreCase(town) && !player.isAdmin()){
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §f This is §b" + plugin.getManager().get(chunky) + " Territory §f you can't §bBuild §fhere.");
+                if (plugin.getConfig().getPillarProtection()){ //"AntiHaxPillarBypass" prevention. Teleports user to the ground if the server says they are two blocks high.
+                    int py = (int)player.getY();
+		            for (int by = py; by > 1; by--){
+			            if (player.getWorld().getBlockIdAt((int)player.getX(), by, (int)player.getZ()) > 0){
+				            if (py - by > 2){
+					            player.teleportTo(player.getX(), by+1.1, player.getZ(), player.getRotation(), player.getPitch());
+				            }
+				            break;
+			            }
+		            }
+                }
                 return true;
             }
         return false;
