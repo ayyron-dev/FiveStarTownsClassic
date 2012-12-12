@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ *
+ * @author Somners
+ */
 public class TownRankManager {
     
     private FiveStarTowns plugin;
@@ -17,10 +21,16 @@ public class TownRankManager {
     File dir = new File("plugins/config/FiveStarTowns/Ranks");
     File file = new File("plugins/config/FiveStarTowns/Ranks/TownRanks.txt");
     
+    /**
+     *
+     */
     public TownRankManager(){
         plugin = FiveStarTowns.getInstance();
     }
     
+    /**
+     *
+     */
     public void loadTownRanks(){
         try{
             if(!dir.exists()){
@@ -65,6 +75,9 @@ public class TownRankManager {
         
         }
     
+    /**
+     *
+     */
     public void refresh(){
         memnum.clear();
         tname.clear();
@@ -72,10 +85,20 @@ public class TownRankManager {
         loadTownRanks();
     }
     
+    /**
+     *
+     * @param r
+     * @return
+     */
     public int getMinTownMemberNum(int r){
         return memnum.get(r);
     }
     
+    /**
+     *
+     * @param membernum
+     * @return
+     */
     public int getTownRank(int membernum){
         int townsrank = 0;
         for(int i = 1 ; i <= memnum.size(); i++){
@@ -86,18 +109,38 @@ public class TownRankManager {
         return townsrank;
     }
     
+    /**
+     *
+     * @param r
+     * @return
+     */
     public List getTownFlags(int r){
         return flags.get(r);
     }
     
+    /**
+     *
+     * @param r
+     * @return
+     */
     public String getTownRankName(int r){
         return tname.get(r);
     }
     
+    /**
+     *
+     * @param r
+     * @return
+     */
     public String getTownMayorName(int r){
         return mname.get(r);
     }
     
+    /**
+     *
+     * @param r
+     * @return
+     */
     public String getTownAssistantName(int r){
         return aname.get(r);
     }

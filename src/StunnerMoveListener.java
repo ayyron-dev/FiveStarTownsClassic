@@ -1,17 +1,29 @@
 
+/**
+ *
+ * @author Somners
+ */
 public class StunnerMoveListener extends PluginListener{
     FiveStarTowns plugin;
     
+    /**
+     *
+     */
     public StunnerMoveListener(){
         this.plugin = FiveStarTowns.getInstance();
     }
     
+    /**
+     *
+     * @param player
+     * @param from
+     * @param to
+     */
     public void onPlayerMove(Player player, Location from, Location to){
         Pos pto = new Pos(to);
         Pos pfrom = new Pos(from);
-        int tox = pto.x >> 4, toz = pto.z >> 4, fromx = pfrom.x >> 4, fromz = pfrom.z >>4;
-        String chunkfrom = fromx+ ":" + fromz;
-        String chunkto = tox + ":" + toz;
+        String chunkfrom = pfrom.getCoord();
+        String chunkto = pto.getCoord();
 //        player.sendMessage(tox + ":" + toz);
         String chunk1 = "";
         String chunk2 = "";
@@ -38,14 +50,11 @@ public class StunnerMoveListener extends PluginListener{
                 if(town != null){
                     player.sendMessage("  §a- §f" + town.getFarewell());
                 }
-                player.sendMessage("  §a- §bPvP §fis §benabled §fhere.");
                 return;
             }
             Town town = plugin.getManager().getTown(chunk2);
             if(town != null){
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fNow Entering: §b" + town.getRankName()+ " " + town.getName() + " Territory§f.");
-                player.sendMessage("§a"+town.getMayorName()+"§b:§f " + town.getOwner());
-                player.sendMessage("§aFlags§b:§f " + town.getFlagString());
                 player.sendMessage("  §a- §f" + town.getWelcome());
                 return;
             }

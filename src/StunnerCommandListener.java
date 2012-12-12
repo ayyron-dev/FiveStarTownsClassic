@@ -4,18 +4,33 @@ import java.util.List;
 import java.util.logging.Logger;
 
 
+/**
+ *
+ * @author Somners
+ */
 public class StunnerCommandListener extends PluginListener{
     private Logger log=Logger.getLogger("Minecraft");
     private FiveStarTowns plugin;
+    private Database data;
     HashMap<Player, Player> acceptMap = new HashMap<Player, Player>();
     
+    /**
+     *
+     */
     public StunnerCommandListener(){
         this.plugin = FiveStarTowns.getInstance();
+        data = plugin.getDatabase();
     }
     
     
     
-        public boolean onCommand(Player player, String[] cmd){
+        /**
+     *
+     * @param player
+     * @param cmd
+     * @return
+     */
+    public boolean onCommand(Player player, String[] cmd){
             TownPlayer tp = plugin.getManager().getTownPlayer(player.getOfflineName());
         
             if(player.canUseCommand("/fivestartowns") && (cmd[0].equalsIgnoreCase("/town") || cmd[0].equalsIgnoreCase("/t"))){
@@ -25,11 +40,12 @@ public class StunnerCommandListener extends PluginListener{
     //                                  //
                 if(cmd.length == 1){
                     help(player);
+                    return true;
                 }
                 if(cmd[1].equalsIgnoreCase("here")){
                     int chunkx = (int)player.getX() >> 4;
                     int chunkz = (int)player.getZ() >> 4;
-                    String chunky = chunkx+":"+chunkz;
+                    String chunky = chunkx+":"+chunkz + ":" + player.getWorld().getName();
                     String townName = "Wilderness";
                     if(plugin.getManager().containsKey(chunky)){
                         townName = plugin.getManager().get(chunky);
@@ -58,7 +74,7 @@ public class StunnerCommandListener extends PluginListener{
     //            Create Town           //
     //                                  //            
             
-            if(cmd[1].equalsIgnoreCase("create") && cmd.length > 2){
+            if(cmd[1].equalsIgnoreCase("create") && cmd.length > 2 && player.canUseCommand("/cancreatetown")){
                 if(tp != null){
                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are already in a town! Please leave it before starting a new one.");
                     return true;
@@ -79,13 +95,12 @@ public class StunnerCommandListener extends PluginListener{
                     sb.append(cmd[i] + " ");
                 }
                 String townName = sb.toString().trim();
-                MySQL mysql = new MySQL();
-                if(mysql.keyExists(townName, "towns", "name")){
+                if(data.keyExists(townName, "towns", "name")){
                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fTown §a'§b"+townName+"§a'§f already exists.");
                     return true;
                 }
-                mysql.insertTownPlayer(player.getOfflineName(), townName);
-                mysql.insertTown(townName, player.getOfflineName(), "");
+                data.insertTownPlayer(player.getOfflineName(), townName);
+                data.insertTown(townName, player.getOfflineName(), "");
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fTown §a'§b"+townName+"§a'§f has been created!");
                 if(plugin.getConfig().getUseDCO()){
                     etc.getLoader().callCustomHook("dCBalance", new Object[] {"Account-Withdraw", player.getOfflineName(), plugin.getConfig().getTownCost()});
@@ -107,8 +122,7 @@ public class StunnerCommandListener extends PluginListener{
                 }
                 TownPlayer otp = plugin.getManager().getTownPlayer(acceptMap.get(player).getOfflineName());
                 if(cmd[2].equalsIgnoreCase(otp.getTownName())){
-                    MySQL mysql = new MySQL();
-                    mysql.insertTownPlayer(player.getOfflineName(), otp.getTownName());
+                    data.insertTownPlayer(player.getOfflineName(), otp.getTownName());
                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §bYou have accepted the invitation to " + otp.getTownName()+".");
                    acceptMap.get(player).sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+player.getOfflineName()+"§f has accepted an invitation to your town.");
                    acceptMap.remove(player);
@@ -125,6 +139,9 @@ public class StunnerCommandListener extends PluginListener{
                     sb.append(cmd[i]).append(" ");
                 }
                 Town town = plugin.getManager().getTown(sb.toString().trim());
+                if(town == null){
+                    player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThis Town Does not exists.");
+                }
                 int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus(); 
                 player.sendMessage("§a[§b" + town.getRankName()+ " " + tp.getTownName() + "§a]");
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThis Land is: §b" + town.getRankName()+ " " + town.getName() + " Territory§f.");
@@ -166,6 +183,12 @@ public class StunnerCommandListener extends PluginListener{
             
             
                 if(player.isAdmin()){
+                    if(cmd[1].equalsIgnoreCase("convert")){
+                        data.convert(cmd[2]);
+                        player.sendMessage("§4Conversion Attempted, hopefully it worked.");
+                        return true;
+                    }
+                    
                     if(cmd[1].equalsIgnoreCase("addbonus") && cmd.length == 4){
                         StringBuilder sb = new StringBuilder();
                         for(int i = 2; i < cmd.length ; i++){
@@ -203,7 +226,11 @@ public class StunnerCommandListener extends PluginListener{
     }
         
         
-        public void help(Player player){
+        /**
+     *
+     * @param player
+     */
+    public void help(Player player){
             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns help");
             player.sendMessage("  §a- /t info [town]    §fget this towns info");
             player.sendMessage("  §a- /t here  §fSee who owns the town where you are standing, if anyoneypooooooooooooooujhhhhhh");
@@ -215,7 +242,11 @@ public class StunnerCommandListener extends PluginListener{
             player.sendMessage("  §a- /t help [owner|o]  §ftown owner help");
         }
         
-        public void memberHelp(Player player){
+        /**
+     *
+     * @param player
+     */
+    public void memberHelp(Player player){
             TownPlayer tp = plugin.getManager().getTownPlayer(player.getName());
             if(tp != null && (tp.isAssistant() || tp.isOwner())){
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns Member Help");
@@ -230,7 +261,11 @@ public class StunnerCommandListener extends PluginListener{
             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYou are not a Town Member.");
         }
         
-        public void assistantHelp(Player player){
+        /**
+     *
+     * @param player
+     */
+    public void assistantHelp(Player player){
             TownPlayer tp = plugin.getManager().getTownPlayer(player.getName());
             if(tp != null && (tp.isAssistant() || tp.isOwner())){
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns Assistant Help");
@@ -247,7 +282,11 @@ public class StunnerCommandListener extends PluginListener{
         }
         
         
-        public void ownerHelp(Player player){
+        /**
+     *
+     * @param player
+     */
+    public void ownerHelp(Player player){
             TownPlayer tp = plugin.getManager().getTownPlayer(player.getName());
             if(tp != null && tp.isOwner()){
                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fFiveStarTowns Owner Help");

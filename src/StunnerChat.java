@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 
+/**
+ *
+ * @author Somners
+ */
 public class StunnerChat extends PluginListener{
     
     FiveStarTowns plugin;
@@ -16,10 +20,16 @@ public class StunnerChat extends PluginListener{
     File file1 = new File("plugins/config/FiveStarTowns/nicknames.txt");
     File file3 = new File("plugins/config/FiveStarTowns/groupnicknames.txt");
     
+    /**
+     *
+     */
     public StunnerChat() {
         plugin = FiveStarTowns.getInstance();
     }
     
+    /**
+     *
+     */
     public void loadFiles(){
         try{  
             if(!file1.exists()){
@@ -55,6 +65,12 @@ public class StunnerChat extends PluginListener{
     }
     
     
+    /**
+     *
+     * @param player
+     * @param sbMessage
+     * @return
+     */
     public boolean onChat(Player player, java.lang.StringBuilder sbMessage){
         String pon = player.getOfflineName();
         String syntaxed = plugin.getConfig().getChatSyntax();
@@ -109,7 +125,13 @@ public class StunnerChat extends PluginListener{
     
     }
     
-        public boolean onCommand(Player player, String[] cmd){
+        /**
+     *
+     * @param player
+     * @param cmd
+     * @return
+     */
+    public boolean onCommand(Player player, String[] cmd){
         if(cmd[0].equalsIgnoreCase("/pnick") && player.canUseCommand("/fivestarchat")){
             if(cmd.length > 1){
                 if(nickname.containsKey(cmd[1])){
@@ -138,6 +160,13 @@ public class StunnerChat extends PluginListener{
     return false;
     }
     
+    /**
+     *
+     * @param player
+     * @param key
+     * @param var
+     * @param file
+     */
     public void Writer(Player player, String key, String var, File file){
       try{
         BufferedReader read = new BufferedReader(new FileReader(file));

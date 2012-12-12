@@ -4,60 +4,125 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Somners
+ */
 public class TownManager{
     
     private Logger log=Logger.getLogger("Minecraft");
     private FiveStarTowns plugin;
-    MySQL mysql = new MySQL();
+    private Database data;
+    /**
+     *
+     */
     public HashMap<String, String> chunkmap = new HashMap();
+    private StunnerConfig config;
     
+    /**
+     *
+     * @param plugin
+     */
     public TownManager(FiveStarTowns plugin){
         this.plugin = plugin;
+        data = FiveStarTowns.getDatabase();
+        config = FiveStarTowns.getConfig();
     }
     
+    /**
+     *
+     * @param key
+     * @param value
+     */
     public void put(String key, String value){
        chunkmap.put(key, value);
     }
     
+    /**
+     *
+     * @param key
+     */
     public void remove(String key){
         chunkmap.remove(key);
     }
     
+    /**
+     *
+     * @param key
+     * @return
+     */
     public boolean containsKey(String key){
         return chunkmap.containsKey(key);
     }
     
+    /**
+     *
+     * @param key
+     * @return
+     */
     public String get(String key){
         return chunkmap.get(key);
     }
     
+    /**
+     *
+     * @param name
+     * @return
+     */
     public Town getTown(String name){
-        if(mysql.keyExists(name, "towns", "name")){
+        if(data.keyExists(name, "towns", "name")){
             return new Town(name);
         }
         return null;
     }
     
+    /**
+     *
+     * @param name
+     * @return
+     */
     public TownPlayer getTownPlayer(String name){
         Player player = etc.getServer().getPlayer(name);
-        if(player != null && mysql.keyExists(name, "townsusers", "username")){
+        if(player != null && data.keyExists(name, "townsusers", "username")){
             return new TownPlayer(player);
         }
         return null;
     }
+    
+    /**
+     *
+     * @param worldName
+     * @return
+     */
+    public boolean isAvailableWorld(String worldName){
+        List worlds = config.getAvailableWorlds();
+        if(worlds.contains(worldName)){
+            return true;
+        }
+        return false;
+    }
             
     
     
-    public boolean chunksConnected(int x, int z, String faction){
+    /**
+     *
+     * @param x
+     * @param z
+     * @param faction
+     * @param worldName
+     * @return
+     */
+    public boolean chunksConnected(int x, int z, String faction, String worldName){
         int xx = x >> 4;
         int zz = z >> 4;
 //        String chunky = (xx) + ":" + (zz);
-        String check1 = (xx + 1) + ":" + (zz);
-        String check2 = (xx - 1) + ":" + (zz);
-        String check3 = (xx) + ":" + (zz + 1);
-        String check4 = (xx) + ":" + (zz - 1);
+        String check1 = (xx + 1) + ":" + (zz) + ":" + worldName;
+        String check2 = (xx - 1) + ":" + (zz) + ":" + worldName;
+        String check3 = (xx) + ":" + (zz + 1) + ":" + worldName;
+        String check4 = (xx) + ":" + (zz - 1) + ":" + worldName;
         if(chunkmap.containsKey(check1)){
             if(chunkmap.get(check1).equalsIgnoreCase(faction)){
             return true;}
@@ -79,6 +144,11 @@ public class TownManager{
         return false;
     }
     
+    /**
+     *
+     * @param faction
+     * @return
+     */
     public int chunkAmount(String faction){
         String chunky = chunkmap.toString();
         String chunky1 = chunky.replace("{", "");
@@ -94,10 +164,15 @@ public class TownManager{
         return chunksowned;
     }
         
+    /**
+     *
+     * @param player
+     * @return
+     */
     public boolean chunkReturn(Player player){
         int chunkx = (int)player.getX() >> 4;
         int chunkz = (int)player.getZ() >> 4;
-        String chunky = chunkx + ":" + chunkz;
+        String chunky = chunkx + ":" + chunkz + ":" + player.getWorld().getName();
         String faction = "Wilderness";
         TownPlayer tp = getTownPlayer(player.getOfflineName());
         if(tp == null){return false;}
@@ -129,12 +204,15 @@ public class TownManager{
     
     
     
+    /**
+     *
+     */
     public void AddHashMap(){
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet result = null;
         try{
-        conn = new MySQLConnector().getConnection();
+        conn = FiveStarTowns.getConnection();
         ps = conn.prepareStatement("SELECT * FROM chunks");
         result = ps.executeQuery();
         while(result.next()){

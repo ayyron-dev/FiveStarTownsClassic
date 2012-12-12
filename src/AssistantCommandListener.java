@@ -3,16 +3,31 @@
 import java.util.logging.Logger;
 
 
+/**
+ *
+ * @author Somners
+ */
 public class AssistantCommandListener extends PluginListener{
     private Logger log=Logger.getLogger("Minecraft");
     private FiveStarTowns plugin;
     private StunnerCommandListener scl;
+    private Database data;
     
+    /**
+     *
+     */
     public AssistantCommandListener(){
         this.plugin = FiveStarTowns.getInstance();
         scl = plugin.getCommandListener();
+        data = plugin.getDatabase();
     }
     
+    /**
+     *
+     * @param player
+     * @param cmd
+     * @return
+     */
     public boolean onCommand(Player player, String[] cmd){
         if(player.canUseCommand("/fivestartowns") && (cmd[0].equalsIgnoreCase("/town") || cmd[0].equalsIgnoreCase("/t"))){
         TownPlayer tp = plugin.getManager().getTownPlayer(player.getOfflineName());
@@ -27,16 +42,19 @@ public class AssistantCommandListener extends PluginListener{
                     int chunkz = (int)player.getZ() >> 4;
                     Town town = tp.getTown();
                     String chunky = chunkx+":"+chunkz;
-                    String townName = town.getName(); 
-                    MySQL mysql = new MySQL();
+                    String townName = town.getName();
                     int chunksowned = plugin.getManager().chunkAmount(townName);
-                    int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus(); 
+                    int chunksallowed = (plugin.getConfig().getChunkMultiplier() * town.getMemberCount()) + town.getBonus();
+                        if(!plugin.getManager().isAvailableWorld(player.getWorld().getName())){
+                            player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fThis world is not available for claiming.");
+                            return true;
+                        }
                         if(chunksowned >= chunksallowed){
                             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fYour town already owns the max amount of land plots.");
                             player.sendMessage("  §a-§bHint§a- §fTry unclaiming land if you really need this land plot.");
                             return true;
                         }
-                        if(!plugin.getManager().chunksConnected((int)player.getX(), (int)player.getZ(), townName) && chunksowned > 0){
+                        if(!plugin.getManager().chunksConnected((int)player.getX(), (int)player.getZ(), townName, player.getWorld().getName()) && chunksowned > 0){
                             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand Section not connected to your town.");
                             player.sendMessage("  §a-§bHint§a- §fTry claiming land next to your existing town.");
                             return true;
@@ -45,7 +63,7 @@ public class AssistantCommandListener extends PluginListener{
                             if(plugin.getManager().get(chunky).equalsIgnoreCase("Wilderness")){
                                 plugin.getManager().remove(chunky);
                                 plugin.getManager().put(chunky, townName);
-                                mysql.updateStringEntry("chunk", chunky,"chunks", townName, "town");
+                                data.updateStringEntry("chunk", chunky,"chunks", townName, "town");
                                 player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand Claimed!");
                                 return true;
                             }
@@ -56,7 +74,7 @@ public class AssistantCommandListener extends PluginListener{
                         }
                         if(!plugin.getManager().containsKey(chunky)){
                             plugin.getManager().put(chunky, townName);
-                            mysql.InsertChunk(chunky, townName);
+                            data.InsertChunk(chunky, townName);
                             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand Claimed!");
                             return true;
                         }
@@ -70,14 +88,13 @@ public class AssistantCommandListener extends PluginListener{
 
                     int chunkx = (int)player.getX() >> 4;
                     int chunkz = (int)player.getZ() >> 4;
-                    String chunky = chunkx+":"+chunkz;
+                    String chunky = chunkx+":"+chunkz+":"+player.getWorld().getName();
                     String townName = tp.getTownName();
                     if(plugin.getManager().containsKey(chunky)){
-                        MySQL mysql = new MySQL();
                         if(plugin.getManager().get(chunky).equalsIgnoreCase(townName)){
                             plugin.getManager().remove(chunky);
                             plugin.getManager().put(chunky, "Wilderness");
-                            mysql.updateStringEntry("chunk", chunky,"chunks", "Wilderness", "town");
+                            data.updateStringEntry("chunk", chunky,"chunks", "Wilderness", "town");
                             player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §fLand unclaimed");
                             return true;
                         }
@@ -154,9 +171,8 @@ public class AssistantCommandListener extends PluginListener{
     //    kick player from Town         //
     //                                  //
             if(cmd[1].equalsIgnoreCase("kick") && cmd.length == 3){
-                MySQL mysql = new MySQL();
-                if(mysql.keyExists(cmd[2], "townsusers", "username")){
-                    mysql.delete("townsusers", "username", cmd[2]);
+                if(data.keyExists(cmd[2], "townsusers", "username")){
+                    data.delete("townsusers", "username", cmd[2]);
                     player.sendMessage("§a[§b" + plugin.getConfig().getServerName() + "§a] §b"+cmd[2]+"§f has been kicked from your town.");
                     return true;
                 }

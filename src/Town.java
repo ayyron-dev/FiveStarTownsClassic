@@ -2,6 +2,10 @@
 
 import java.util.List;
 
+/**
+ *
+ * @author Somners
+ */
 public class Town{
     
     private List members;
@@ -16,120 +20,204 @@ public class Town{
     private boolean sanctuary = false;
     private boolean protection = false;
     private boolean creepernerf = false;
-    MySQL mysql = new MySQL();
+    private Database data;
     private int bonusChunks;
     private FiveStarTowns plugin;
     private TownRankManager trm;
     
+    /**
+     *
+     * @param townName
+     */
     public Town(String townName){
-//        Class fst = Class.forName("FiveStarTowns");
         plugin = FiveStarTowns.getInstance(); 
-//        plugin = (FiveStarTowns)Class.forName("FiveStarTowns")
+        data = plugin.getDatabase();
         trm = plugin.getTownRankManager();
-        members = mysql.getTownPlayers(townName);
+        members = data.getTownPlayers(townName);
         membernum = members.size();
         name = townName;
-        owner = mysql.getStringValue(name, "towns", "owner", "name");
-        assistant = mysql.getStringValue(name, "towns", "assistant", "name");
-        bonusChunks = mysql.getIntValue(name, "towns", "bonus", "name");
-        balance = mysql.getDoubleValue(name, "towns", "balance", "name");
-        if(mysql.getIntValue(name, "towns", "nopvp", "name") == 1){
+        owner = data.getStringValue(name, "towns", "owner", "name");
+        assistant = data.getStringValue(name, "towns", "assistant", "name");
+        bonusChunks = data.getIntValue(name, "towns", "bonus", "name");
+        balance = data.getDoubleValue(name, "towns", "balance", "name");
+        if(data.getIntValue(name, "towns", "nopvp", "name") == 1){
             nopvp = true;
         }
-        if(mysql.getIntValue(name, "towns", "friendlyfire", "name") == 1){
+        if(data.getIntValue(name, "towns", "friendlyfire", "name") == 1){
             friendlyfire = true;
         }
-        if(mysql.getIntValue(name, "towns", "sanctuary", "name") == 1){
+        if(data.getIntValue(name, "towns", "sanctuary", "name") == 1){
             sanctuary = true;
         }
-        if(mysql.getIntValue(name, "towns", "protected", "name") == 1){
+        if(data.getIntValue(name, "towns", "protected", "name") == 1){
             protection = true;
         }
-        if(mysql.getIntValue(name, "towns", "creepernerf", "name") == 1){
+        if(data.getIntValue(name, "towns", "creepernerf", "name") == 1){
             creepernerf = true;
         }
         rank = trm.getTownRank(membernum);
     }
     
+    /**
+     *
+     * @return
+     */
     public String getOwner(){
         return owner;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getName(){
         return name;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getAssistant(){
         return assistant;
     }
     
+    /**
+     *
+     * @return
+     */
     public List getMembers(){
         return members;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getMemberSize(){
         return membernum;
     }
     
+    /**
+     *
+     * @return
+     */
     public TownPlayer getOwnerTP(){
         return plugin.getManager().getTownPlayer(owner);
     }
     
+    /**
+     *
+     * @return
+     */
     public TownPlayer getAssistantTP(){
         return plugin.getManager().getTownPlayer(assistant);
     }
     
+    /**
+     *
+     * @param tp
+     */
     public void setAssistant(TownPlayer tp){
         String tpname = tp.getName();
-        mysql.updateStringEntry(name, "name", "towns", tpname, "assistant");
+        data.updateStringEntry(name, "name", "towns", tpname, "assistant");
     }
     
+    /**
+     *
+     * @return
+     */
     public int getBonus(){
         return bonusChunks;
     }
+    /**
+     *
+     * @param num
+     */
     public void setBonus(int num){
-        mysql.updateIntEntry(name, "name", "towns", num, "bonus");
+        data.updateIntEntry(name, "name", "towns", num, "bonus");
     }
     
+    /**
+     *
+     * @param toAdd
+     */
     public void addBonus(int toAdd){
-        int oldnum = mysql.getIntValue(name, "towns", "bonus", "name");
-        mysql.updateIntEntry(name, "name", "towns", oldnum + toAdd, "bonus");
+        int oldnum = data.getIntValue(name, "towns", "bonus", "name");
+        data.updateIntEntry(name, "name", "towns", oldnum + toAdd, "bonus");
     }
     
+    /**
+     *
+     * @return
+     */
     public int getMemberCount(){
         return getMembers().size();
     }
     
+    /**
+     *
+     * @return
+     */
     public double getBalance(){
         return balance;
     }
     
+    /**
+     *
+     * @param toAdd
+     */
     public void addBalance(double toAdd){
         balance = balance + toAdd;
-        mysql.updateDoubleEntry(name, "name", "towns", balance, "balance");
+        data.updateDoubleEntry(name, "name", "towns", balance, "balance");
     }
     
+    /**
+     *
+     * @param toRemove
+     */
     public void removeBalance(double toRemove){
         balance = balance - toRemove;
-        mysql.updateDoubleEntry(name, "name", "towns", balance, "balance");
+        data.updateDoubleEntry(name, "name", "towns", balance, "balance");
     }
     
+    /**
+     *
+     * @return
+     */
     public int getTownRank(){
         return rank;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getRankName(){
         return trm.getTownRankName(rank);
     }
     
+    /**
+     *
+     * @return
+     */
     public String getMayorName(){
         return trm.getTownMayorName(rank);
     }
     
+    /**
+     *
+     * @return
+     */
     public String getAssistantName(){
         return trm.getTownAssistantName(rank);
     }
     
+    /**
+     *
+     * @param flag
+     * @return
+     */
     public boolean canUseFlag(String flag){
         List flags = trm.getTownFlags(rank);
         if(flags.contains(flag)){
@@ -138,46 +226,90 @@ public class Town{
         return false;
     }
     
+    /**
+     *
+     * @param toSet
+     */
     public void setNoPvp(int toSet){
-        mysql.updateDoubleEntry(name, "name", "towns", toSet, "nopvp");
+        data.updateDoubleEntry(name, "name", "towns", toSet, "nopvp");
     }
     
+    /**
+     *
+     * @param toSet
+     */
     public void setProtected(int toSet){
-        mysql.updateDoubleEntry(name, "name", "towns", toSet, "protected");
+        data.updateDoubleEntry(name, "name", "towns", toSet, "protected");
     }
     
+    /**
+     *
+     * @param toSet
+     */
     public void setSanctuary(int toSet){
-        mysql.updateDoubleEntry(name, "name", "towns", toSet, "sanctuary");
+        data.updateDoubleEntry(name, "name", "towns", toSet, "sanctuary");
     }
     
+    /**
+     *
+     * @param toSet
+     */
     public void setCreeperNerf(int toSet){
-        mysql.updateDoubleEntry(name, "name", "towns", toSet, "creepernerf");
+        data.updateDoubleEntry(name, "name", "towns", toSet, "creepernerf");
     }
     
+    /**
+     *
+     * @param toSet
+     */
     public void setFriendlyFire(int toSet){
-        mysql.updateDoubleEntry(name, "name", "towns", toSet, "friendlyfire");
+        data.updateDoubleEntry(name, "name", "towns", toSet, "friendlyfire");
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean getNoPvp(){
         return nopvp;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean getProtected(){
         return protection;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean getSanctuary(){
         return sanctuary;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean getCreeperNerf(){
         return creepernerf;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean getFriendlyFire(){
         return friendlyfire;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getFlagString(){
         StringBuilder sb = new StringBuilder();
         if(protection){
@@ -198,6 +330,10 @@ public class Town{
         return sb.toString();
     }
     
+    /**
+     *
+     * @return
+     */
     public String getAvailableFlags(){
         StringBuilder sb = new StringBuilder();
         List flags = trm.getTownFlags(rank);
@@ -207,20 +343,36 @@ public class Town{
         return sb.toString();
     } 
     
+    /**
+     *
+     * @return
+     */
     public String getWelcome(){
-        return mysql.getStringValue(name, "towns", "welcomemsg", "name");
+        return data.getStringValue(name, "towns", "welcomemsg", "name");
     }
     
+    /**
+     *
+     * @return
+     */
     public String getFarewell(){
-        return mysql.getStringValue(name, "towns", "farewellmsg", "name");
+        return data.getStringValue(name, "towns", "farewellmsg", "name");
     }
     
+    /**
+     *
+     * @param msg
+     */
     public void setFarewell(String msg){
-        mysql.updateStringEntry(name, "name", "towns", msg, "farewellmsg");
+        data.updateStringEntry(name, "name", "towns", msg, "farewellmsg");
     }
     
+    /**
+     *
+     * @param msg
+     */
     public void setWelcome(String msg){
-        mysql.updateStringEntry(name, "name", "towns", msg, "welcomemsg");
+        data.updateStringEntry(name, "name", "towns", msg, "welcomemsg");
     }
     
 }
